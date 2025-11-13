@@ -1,5 +1,6 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose"); // Importando Mongoose
 
+// Conexión a la BBDD
 const connectDB = async () => {
     try {
         await mongoose.connect(process.env.MONGODB_URI);
@@ -9,4 +10,4 @@ const connectDB = async () => {
     }
 }
 
-module.exports = connectDB;
+module.exports = connectDB; // Exportar conexión

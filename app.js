@@ -34,6 +34,6 @@ app.listen(port, () => {
   );
 });
 
-connectDB();
+connectDB(); // Conexión Mongo
 
 module.exports = app; // Exportar la app para usarla en tests
