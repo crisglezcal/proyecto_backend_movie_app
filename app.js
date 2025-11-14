@@ -1,6 +1,8 @@
 const express = require("express"); // Importando express
 const cowsay = require("cowsay");
 
+const connectDB = require("./config/db_mongo");
+
 const app = express(); // Creando el servidor
 const port = 3000; // Puerto de pruebas
 
@@ -8,12 +10,12 @@ const port = 3000; // Puerto de pruebas
 require('dotenv').config();
 
 // Middlewares
-const error404 = require("./middlewares/error404");
+// const error404 = require("./middlewares/error404");
 // Morgan
-const morgan = require("./middlewares/morgan");
+// const morgan = require("./middlewares/morgan");
 
 // Configuración del logger con Morgan
-app.use(morgan(':method :url :status :param[id] - :response-time ms :body'));
+// app.use(morgan(':method :url :status :param[id] - :response-time ms :body'));
 
 
 // Habilitar recepción de JSON por mi backend
@@ -26,10 +28,12 @@ app.use(express.static('public')); // Para servir archivos estáticos del front 
 app.listen(port, () => {
   console.log(
     cowsay.say({
-      text: `Example app listening on port http://localhost:${port}`,
+      text: `Endpoint Proyecto Movie App http://localhost:${port}`,
       f: "owl", // Use the owl ASCII art // owl
     })
   );
 });
+
+connectDB(); // Conexión Mongo
 
 module.exports = app; // Exportar la app para usarla en tests
