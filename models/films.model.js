@@ -44,18 +44,22 @@ const objectSchema = {
         type: String,
         required: true,
     },
-    opinions: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Sensacine",
-            required: true,
-        },
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Filmafinitty",
-            required: true,
-        }
-    ],
+    opinions: {
+        opinionSensacine: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Sensacine",
+                required: true
+            }
+        ],
+        opinionFilmafinitty: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "FilmaFinitty",
+                required: true
+            }
+        ]
+    }
 }
 
 // Crear Esquema
@@ -76,14 +80,16 @@ const film1 = new Film({
     sinopsis: "Sinopsis de prueba",
     actors: "Actor 1, Actor 2",
     rating: "PG-16",
-    opinions: [
-        {
-           Sensacine:"Muy buena"
-        },
-        {
-            Filmafinitty:"Mejor aún"
-        }
-    ]
+    opinions: {
+        opinionSensacine: [
+            "6760d94f02c44b3c49ea3711",
+            "6760d94f02c44b3c49ea3712"
+        ],
+        opinionFilmafinitty: [
+            "6760d95e02c44b3c49ea3713",
+            "6760d95e02c44b3c49ea3714"
+        ]
+    }
 });
 
 film1.save()
