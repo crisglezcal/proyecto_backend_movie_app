@@ -1,6 +1,7 @@
 const queries = {
     getAllUsers:`SELECT *
-    FROM users`,
+    FROM users`
 }
+
     
 module.exports = queries;

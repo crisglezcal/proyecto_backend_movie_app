@@ -1,8 +1,6 @@
 //Todo lo relacionado con peliculas
 const express = require('express');
 
-
-
 const router = express.Router();
 //------------- WEB -------------
 //[GET] http://localhost:3000/search 
