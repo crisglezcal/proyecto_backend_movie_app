@@ -1,15 +1,15 @@
-//vistas generales o estáticas del sitio (sin lógica de usuario/películas)
+// vistas generales o estáticas del sitio (sin lógica de usuario/películas)
 const express = require('express');
-
-
+const { homeController, dashboardController } = require('../controllers/viewsController');
 
 const router = express.Router();
-//------------- WEB -------------
-//[GET] http://localhost:3000/ 
-router.get('/'); // Vista de inicio
-//[GET] http://localhost:3000/dashboard 
-router.get('/dashboard'); // Panel de control
-// -------------API--------------
+
+// [GET] http://localhost:3000/ - Página de inicio
+router.get('/', homeController);
+
+// [GET] http://localhost:3000/dashboard - Panel de control
+router.get('/dashboard', dashboardController);
 
 
 module.exports = router;
+
