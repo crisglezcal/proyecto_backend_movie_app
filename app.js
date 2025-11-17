@@ -2,6 +2,7 @@ const express = require("express"); // Importando express
 const cowsay = require("cowsay");
 
 const connectDB = require("./config/db_mongo");
+const Film = require("./models/films.model");
 
 // Importar rutas
 const viewsRoutes = require("./routes/viewsRoutes");

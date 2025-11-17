@@ -1,28 +1,40 @@
-//Todo lo relacionado con peliculas
 const express = require('express');
-
+const movieController = require("../controllers/films.controller.js");
+const { isAdmin, isAuthenticated } = require("../middlewares/auth");
 const router = express.Router();
+
 //------------- WEB -------------
-//[GET] http://localhost:3000/search 
-router.get('/search'); // Buscador
 
-//[GET] http://localhost:3000/search/:title
-router.get('/search/:title'); // Detalle
+// Vista para admin → gestión completa
+//http://localhost:3000/movies
+router.get("/movies", isAdmin, async (req, res) => {
+  const movies = await Movie.find();
+  res.render("admin/movies", { movies });
+});
 
-//[GET] http://localhost:3000/movies 
-router.get('/movies'); // 
+//http://localhost:3000/search/:title
+// Vista de detalle usuario → /search/:title
+router.get("/search/:title", isAuthenticated, async (req, res) => {
+  // Reutilizamos el controller
+  req.params.title = req.params.title;
+  const data = await movieController.getMovieByTitle(req, res);
+
+  // render si funciona
+  res.render("user/movieDetail", { movie: data.movie });
+});
 
 // -------------API--------------
-//[GET] http://localhost:3000/api/movie/:title Buscar película o películas
-router.get('/api/movie/:title');
 
-//[POST] http://localhost:3000/api/movie Crear película (admin)
-router.post('/api/movie');
+// GET localhost:3000/api/movie/:title → Buscar película
+router.get("/:title", isAuthenticated, movieController.getMovieByTitle);
 
-//[PUT] http://localhost:3000/api/movie Editar película (admin)
-router.put('/api/movie/:id');
+// POST localhost:3000/api/movie → Crear película
+router.post("/", isAdmin, movieController.createMovie);
 
-//[DELETE] http://localhost:3000/api/movie Borrar película (admin)
-router.delete('/api/movie/:id');
+// PUT localhost:3000/api/movie/:id → Editar película
+router.put("/:id", isAdmin, movieController.updateMovie);
+
+// DELETE localhost:3000/api/movie/:id → Eliminar película
+router.delete("/:id", isAdmin, movieController.deleteMovie);
 
 module.exports = router;
