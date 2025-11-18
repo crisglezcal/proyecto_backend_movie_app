@@ -29,7 +29,7 @@ try {
     );
     const data = await response.json();
     if (data.Response === "False") {
-      return []; // no se encontró
+      return null; // no se encontró
     }
     return data.Search;
   }catch(error){
@@ -50,7 +50,7 @@ try {
     if (data.Response === "False") {
       return null; // no se encontró
     }
-    return data;
+    return [data];
   }catch(error){
     console.error("Error al obtener detalles de la película:", error.message);
     return null;

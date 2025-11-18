@@ -1,24 +1,41 @@
-console.log("hola desde VanillaJS. Aquí va tu código para manipular el DOM de la web y para hacer llamadas a API");
-
 // Cuando se hace click en el botón de búsqueda
-document.getElementById("searchButton").addEventListener("click", async e => {
-    const title = document.getElementById("productName").value; // Obtenemos el título del input
-    alert(title); // Mostramos alerta con el título
-    
-    try{
-        // Hacemos petición a nuestra propia API
-        const res = await fetch(`/api/books/${title}`);
-        const data = await res.json(); // Convertimos respuesta a JSON
-        alert(data);
-        console.log(data);
-        // Mostramos el resultado en la página
-        document.getElementById("result").innerHTML = JSON.stringify(data);
-    }
-    catch(error){
-        console.log(error); // Si hay error, lo mostramos
-    }
-})
+document.getElementById("searchButton").addEventListener("click", async () => {
+    const title = document.getElementById("movieName").value.trim();
 
+    if (!title) {
+        document.getElementById("result").innerHTML = "<p>Escribe el nombre de una película</p>";
+        return;
+    }
+
+    try {
+        const res = await fetch(`/search/${encodeURIComponent(title)}`);
+        const data = await res.json();
+
+        // Si es un objeto (MongoDB) lo convertimos en array para unificar
+        const movies = Array.isArray(data) ? data : [data];
+
+        // Generar HTML de todas las películas
+        const html = movies.map(movie => `
+            <article class="movie-card">
+                <h2>${movie.Title}</h2>
+                <img src="${movie.Poster !== "N/A" ? movie.Poster : "/img/default.png"}" alt="${movie.Title}" class="img_logo">
+                <p><strong>Año:</strong> ${movie.Year || "Desconocido"}</p>
+                <p><strong>Director:</strong> ${movie.Director || "Desconocido"}</p>
+                <p><strong>Género:</strong> ${movie.Genre || "Desconocido"}</p>
+                <p><strong>Duración:</strong> ${movie.Runtime || "Desconocido"}</p>
+            </article>
+        `).join("");
+
+        document.getElementById("result").innerHTML = html;
+
+    } catch (error) {
+        console.error("Error al buscar películas:", error);
+        document.getElementById("result").innerHTML = "<p>Ocurrió un error al buscar películas</p>";
+    }
+});
+
+
+/*
 // Cuando se envía el formulario de producto
 document.getElementById("productForm").addEventListener("submit",(event) => {
     event.preventDefault(); // Evitamos que se recargue la página
@@ -58,4 +75,4 @@ document.getElementById("productForm").addEventListener("submit",(event) => {
                 // Recargamos la página para ver el nuevo producto
                 window.location.reload();
             })
-})
+})*/

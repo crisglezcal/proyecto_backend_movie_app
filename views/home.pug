@@ -5,27 +5,21 @@ html(lang="en")
         meta(http-equiv="X-UA-Compatible", content="IE=edge")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         link(rel="stylesheet", href="/css/style.css")
-        title Document
+        title Buscador de Películas
         
     body
         include ./header.pug
 
         main
-            
-            h1 Buscador
-            input#productName(type="text")
-            button#searchButton Buscar
-            #result
-            
-            h1 Aquí tienes #{msj}
+            h1 ¡Busca tu película!
 
-            section
-                each product in products
-                    article
-                        h1 Sección productos 
-                        p Título: #{product.title}
-                        p Descripción: #{product.description}
-                        p Precio: #{product.price}
-                        img(src=product.image, alt=product.title class="img_logo")
+            // Contenedor de búsqueda centrado
+            div.search-container
+                input#movieName(type="text" placeholder="Escribe el nombre de una película…")
+                button#searchButton Buscar
+
+            // Contenedor donde se mostrarán los resultados
+            #result
+                        
         include ./footer.pug
         script(src="/js/script.js")

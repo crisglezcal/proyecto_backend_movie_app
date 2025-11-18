@@ -3,7 +3,7 @@ const router = express.Router();
 
 const movieAPI = require("../controllers/filmsApiController.js");
 const movieWeb = require("../controllers/filmsWebController.js");
-const Movie = require("../models/films.model");
+const Film = require("../models/films.model"); //esto me trae el modelo especial de Mongoose para poder interactuar con mi colección
 
 //------------- WEB -------------
 
