@@ -8,7 +8,7 @@ const path = require("path");
 // Leer fichero .env
 require('dotenv').config();
 const connectDB = require("./config/db_mongo");
-const cookieParser = require('cookie-parser');
+
 
 // Importar configuración de Google Auth
 require('./config/authConfig');
@@ -27,8 +27,6 @@ const authRoutes = require("./routes/authRoutes");
 const error404 = require("./middlewares/error404");
 const morgan = require("./middlewares/morgan");
 
-// Conexión a BDD
-const connectDB = require("./config/db_mongo");
 
 // ========================================================== INICIALIZACIÓN ==========================================================
 const app = express(); 
@@ -45,6 +43,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('public'));
 app.use(cookieParser());
+
 
 // Session middleware
 app.use(session({ 

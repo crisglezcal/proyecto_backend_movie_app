@@ -31,7 +31,7 @@ const getFavoritesView = async (req, res) => {
             message: 'Error al cargar favoritos'
         });
     }
-
+}
 // [GET] /api/favorites - Películas favoritas (API)
 
 const getFavorites = async (req, res) => {
