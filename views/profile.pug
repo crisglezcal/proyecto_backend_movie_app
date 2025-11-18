@@ -1,0 +1,16 @@
+doctype html
+html
+  head
+    title Perfil
+  body
+    include ./header.pug
+    main 
+        h1 Perfil de #{user.name}
+        form(action="/api/user" method="POST")
+        label(for="name") Nombre:
+        input(type="text" name="name" value=user.name)
+        label(for="email") Email:
+        input(type="email" name="email" value=user.email)
+        button(type="submit") Guardar cambios
+    include ./footer.pug
+    script(src="/js/script.js")

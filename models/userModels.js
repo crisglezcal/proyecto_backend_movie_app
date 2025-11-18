@@ -69,7 +69,6 @@ const getUserById = async (id) => {
     }
     return result;
 };
-
 // PUT /api/user -> Actualizar usuario
 const updateUserById = async (id, userData) => {
     const { name, email, role } = userData;
@@ -93,7 +92,6 @@ const updateUserById = async (id, userData) => {
     }
     return result;
 };
-
 // DELETE /api/user/:id -> Borrar usuario
 const deleteUserById = async (id) => {
     let client, result;
@@ -113,7 +111,6 @@ const deleteUserById = async (id) => {
     }
     return result;
 };
-
 // GET /users -> Obtener todos los usuarios
 const getAllUsers = async () => {
     let client, result;

@@ -1,60 +1,119 @@
 // controllers/userController.js
 
-const userModel = require('../models/userModels'); // Importar el modelo de la BBDD
+const userModel = require('../models/userModels');
 
-// GET /api/user 
-// Obtener datos del perfil
+
+// GET /api/user
 const getUser = async (req, res) => {
-    const userId = req.user.id; // viene del middleware auth
+    try {
+        if (!req.user) {
+            return res.status(401).json({ error: "No autorizado" });
+        }
 
-    const user = await userModel.getUserById(userId); // método del modelo
+        const user = await userModel.getUserById(req.user.id);
 
-    res.status(200).json(user);
+        if (!user) {
+            return res.status(404).json({ error: "Usuario no encontrado" });
+        }
+
+        res.status(200).json(user);
+
+    } catch (error) {
+        console.error("Error en getUser:", error);
+        res.status(500).json({ error: "Error interno" });
+    }
 };
+
 
 // PUT /api/user
-// Editar datos del perfil del usuario o administrador
 const updateUser = async (req, res) => {
-    const userId = req.user.id;
-    const newData = req.body; // {name, email, ...}
+    try {
+        if (!req.user) {
+            return res.status(401).json({ error: "No autorizado" });
+        }
 
-    await userModel.updateUserById(userId, newData);
+        // Sanitizar campos permitidos
+        const allowedFields = ["name", "email", "avatar"];
+        const newData = {};
 
-    res.status(200).json({
-        message: "Usuario actualizado correctamente",
-        data: newData
-    });
+        for (const key of allowedFields) {
+            if (req.body[key] !== undefined) {
+                newData[key] = req.body[key];
+            }
+        }
+
+        const updated = await userModel.updateUserById(req.user.id, newData);
+
+        res.status(200).json({
+            message: "Usuario actualizado correctamente",
+            data: updated
+        });
+
+    } catch (error) {
+        console.error("Error en updateUser:", error);
+        res.status(500).json({ error: "Error interno" });
+    }
 };
 
-// DELETE /api/user/:id
-// Borrar un usuario de la base de datos (solo admin)
+
+// DELETE /api/user/:id (solo admin)
 const deleteUser = async (req, res) => {
-    const { id } = req.params;
+    try {
+        if (!req.user || req.user.role !== "admin") {
+            return res.status(403).json({ error: "No autorizado. Solo admin." });
+        }
 
-    await userModel.deleteUserById(id);
+        const { id } = req.params;
 
-    res.status(200).json({
-        message: "Usuario eliminado correctamente",
-    });
+        await userModel.deleteUserById(id);
+
+        res.status(200).json({
+            message: "Usuario eliminado correctamente"
+        });
+
+    } catch (error) {
+        console.error("Error en deleteUser:", error);
+        res.status(500).json({ error: "Error interno" });
+    }
 };
 
-// GET /profile (ver el perfil)
+
+// GET /profile
 const renderProfile = async (req, res) => {
-    const userId = req.user.id;
+    try {
+        if (!req.user) {
+            return res.redirect("/login");
+        }
 
-    const user = await userModel.getUserById(userId);
+        const user = await userModel.getUserById(req.user.id);
 
-    res.status(200).render("profile", { user });
+        res.status(200).render("profile", { user });
+
+    } catch (error) {
+        console.error("Error en renderProfile:", error);
+        res.status(500).send("Error interno");
+    }
 };
 
-// GET /users (ver los usuarios - solo admin)
+
+// GET /users (solo admin)
 const renderUsersList = async (req, res) => {
-    const users = await userModel.getAllUsers();
+    try {
+        if (!req.user || req.user.role !== "admin") {
+            return res.status(403).send("Acceso denegado");
+        }
 
-    res.status(200).render("users", { users });
+        const users = await userModel.getAllUsers();
+
+        res.status(200).render("users", { users });
+
+    } catch (error) {
+        console.error("Error en renderUsersList:", error);
+        res.status(500).send("Error interno");
+    }
 };
 
-// Exportar estilo simple
+
 module.exports = {
     getUser,
     updateUser,
