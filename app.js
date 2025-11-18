@@ -1,38 +1,27 @@
-const express = require("express"); // Importando express
+const express = require("express");
 const cowsay = require("cowsay");
 
-<<<<<<< Updated upstream
-=======
 // Leer fichero .env
 require('dotenv').config();
->>>>>>> Stashed changes
 const connectDB = require("./config/db_mongo");
 const cookieParser = require('cookie-parser');
-// Leer fichero .env
-require('dotenv').config();
 
-const cookieParser = require('cookie-parser');
-
-<<<<<<< Updated upstream
-
-const connectDB = require("./config/db_mongo");
-=======
 // Importar rutas
 const viewsRoutes = require("./routes/viewsRoutes");
 const favoritesRoutes = require("./routes/favoritesRoutes"); 
 const userRoutes = require("./routes/userRoutes");
 const filmsRoutes = require("./routes/filmsRoutes"); 
 const authRoutes = require("./routes/authRoutes");   
->>>>>>> Stashed changes
 
 const app = express(); // Creando el servidor
 const port = 3000; // Puerto de pruebas
+ 
+const path = require("path");
 
 
-// Habilitar recepción de JSON por mi backend
-// Parsear el body entrante a JSON
-app.use(express.json());
-app.use(express.static('public')); // Para servir archivos estáticos del front CSS, JS, assets
+// Configuración PUG 
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "views"));
 
 // Middlewares
 // const error404 = require("./middlewares/error404");
@@ -42,10 +31,6 @@ app.use(express.static('public')); // Para servir archivos estáticos del front 
 // Configuración del logger con Morgan
 // app.use(morgan(':method :url :status :param[id] - :response-time ms :body'));
 
-
-
-<<<<<<< Updated upstream
-=======
 app.use(express.json());
 app.use(express.static('public')); // Para servir archivos estáticos del front CSS, JS, assets
 app.use(cookieParser());
@@ -78,7 +63,6 @@ app.use((error, req, res, next) => {
     message: error.message 
   });
 });
->>>>>>> Stashed changes
 
 // Iniciar el servidor
 app.listen(port, () => {
@@ -90,6 +74,5 @@ app.listen(port, () => {
   );
 });
 
-connectDB(); // Conexión Mongo
-
-module.exports = app; // Exportar la app para usarla en tests
+connectDB();
+module.exports = app;

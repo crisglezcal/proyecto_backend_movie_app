@@ -1,0 +1,38 @@
+extends layout
+
+block content
+  main.search-container
+    h1 Buscar películas
+
+    // Formulario de búsqueda
+    form.search-form(method="GET", action="/search")
+      input.search-input(type="text", name="title", placeholder="Buscar por título..." value=(query || ""))
+      button.search-btn(type="submit") Buscar
+
+    // Si NO hay resultados
+    if noResults
+      p.no-results No hay resultados para "#{query}"
+
+    // Si hay resultados
+    if movies && movies.length
+      section.results
+        each movie in movies
+          article.movie-card
+            .movie-image
+              if movie.image
+                img(src=movie.image, alt=movie.title)
+              else
+                img(src="/images/no-image.png", alt="Imagen no disponible")
+
+            .movie-info
+              h2.movie-title
+                a(href=`/search/${movie.title}`) #{movie.title}
+
+              p Año: #{movie.year}
+              p Director: #{movie.director}
+              p Género: #{movie.genre}
+              p Duración: #{movie.duration}
+
+            // Botón para añadir favoritos
+            form(method="POST", action="/api/favorites")
+              input(type="hid

@@ -1,5 +1,5 @@
-const pool = require('../config/db_pgsql'); // Conexión a PostgreSQL
-const queries = require('./queries'); // SQL queries definidas en otro archivo
+const pool = require('../config/db_sql'); // Conexión a PostgreSQL
+//const queries = require('./queries'); // SQL queries definidas en otro archivo
 
 // GET /api/user -> Obtener usuario por id
 const getUserById = async (id) => {
@@ -7,12 +7,16 @@ const getUserById = async (id) => {
     try {
         client = await pool.connect();
         const data = await client.query(queries.getUserById, [id]);
-        result = data.rows[0]; // devuelve un solo usuario
+        result = data.rows[0];
     } catch (err) {
-        console.error(err);
+        console.error('Error en getUserById:', err);
         throw err;
     } finally {
-        client.release();
+        if (client) {
+            client.release();
+        } else {
+            console.warn('No se pudo crear cliente en getUserById');
+        }
     }
     return result;
 };
@@ -23,18 +27,17 @@ const updateUserById = async (id, userData) => {
     let client, result;
     try {
         client = await pool.connect();
-        const data = await client.query(queries.updateUserById, [
-            name,
-            email,
-            role,
-            id
-        ]);
-        result = data.rowCount; // cantidad de filas afectadas
+        const data = await client.query(queries.updateUserById, [name, email, role, id]);
+        result = data.rowCount;
     } catch (err) {
-        console.error(err);
+        console.error('Error en updateUserById:', err);
         throw err;
     } finally {
-        client.release();
+        if (client) {
+            client.release();
+        } else {
+            console.warn('No se pudo crear cliente en updateUserById');
+        }
     }
     return result;
 };
@@ -45,12 +48,16 @@ const deleteUserById = async (id) => {
     try {
         client = await pool.connect();
         const data = await client.query(queries.deleteUserById, [id]);
-        result = data.rowCount; // cantidad de filas eliminadas
+        result = data.rowCount;
     } catch (err) {
-        console.error(err);
+        console.error('Error en deleteUserById:', err);
         throw err;
     } finally {
-        client.release();
+        if (client) {
+            client.release();
+        } else {
+            console.warn('No se pudo crear cliente en deleteUserById');
+        }
     }
     return result;
 };
@@ -61,12 +68,16 @@ const getAllUsers = async () => {
     try {
         client = await pool.connect();
         const data = await client.query(queries.getAllUsers);
-        result = data.rows; // devuelve array de usuarios
+        result = data.rows;
     } catch (err) {
-        console.error(err);
+        console.error('Error en getAllUsers:', err);
         throw err;
     } finally {
-        client.release();
+        if (client) {
+            client.release();
+        } else {
+            console.warn('No se pudo crear cliente en getAllUsers');
+        }
     }
     return result;
 };

@@ -1,40 +1,44 @@
 const express = require('express');
-const movieController = require("../controllers/films.controller.js");
-const { isAdmin, isAuthenticated } = require("../middlewares/auth");
 const router = express.Router();
+
+const movieAPI = require("../controllers/filmsController.js");
+const movieWeb = require("../controllers/filmsWebController.js");
+const Movie = require("../models/films.model");
 
 //------------- WEB -------------
 
-// Vista para admin → gestión completa
-//http://localhost:3000/movies
-router.get("/movies", isAdmin, async (req, res) => {
-  const movies = await Movie.find();
-  res.render("admin/movies", { movies });
+router.get("/search", async (req, res) => {
+  const title = req.query.title;
+
+  if (!title) {
+    return res.render("search", { movies: null });
+  }
+
+  // supongamos que llamas al controller...
+  const results = await buscarPeliculas(title);
+
+  res.render("search", {
+    query: title,
+    movies: results.movies,
+    noResults: results.movies.length === 0
+  });
 });
 
-//http://localhost:3000/search/:title
-// Vista de detalle usuario → /search/:title
-router.get("/search/:title", isAuthenticated, async (req, res) => {
-  // Reutilizamos el controller
-  req.params.title = req.params.title;
-  const data = await movieController.getMovieByTitle(req, res);
-
-  // render si funciona
-  res.render("user/movieDetail", { movie: data.movie });
-});
+// Vista web del detalle
+router.get("/search/:title", movieWeb.renderMovieDetail);
 
 // -------------API--------------
 
-// GET localhost:3000/api/movie/:title → Buscar película
-router.get("/:title", isAuthenticated, movieController.getMovieByTitle);
+// GET /api/movie/:title
+router.get("/:title", movieAPI.getMovieByTitle);
 
-// POST localhost:3000/api/movie → Crear película
-router.post("/", isAdmin, movieController.createMovie);
+// POST /api/movie
+router.post("/", movieAPI.createMovie);
 
-// PUT localhost:3000/api/movie/:id → Editar película
-router.put("/:id", isAdmin, movieController.updateMovie);
+// PUT /api/movie/:id
+router.put("/:id", movieAPI.updateMovie);
 
-// DELETE localhost:3000/api/movie/:id → Eliminar película
-router.delete("/:id", isAdmin, movieController.deleteMovie);
+// DELETE /api/movie/:id
+router.delete("/:id", movieAPI.deleteMovie);
 
 module.exports = router;

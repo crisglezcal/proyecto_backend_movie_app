@@ -1,0 +1,29 @@
+header
+    nav
+        ul
+            li
+                a(href="/dashboard") Películas 
+                //- Panel de control
+            
+            li
+                a(href="/favorites") Películas favoritas
+
+            //- MENÚ CONDICIONAL SEGÚN ESTADO DE AUTENTICACIÓN
+            if user
+                //- USUARIO LOGUEADO - "Mostrar Perfil" y opciones del administrador ("Gestionar películas" y "Usuarios")
+                li
+                    a(href="/profile") Perfil
+                
+                //- OPCIONES SOLO PARA ADMINISTRADORES
+                if user.role === 'admin'
+                    li
+                        a(href="/manage") Gestionar películas
+                    li
+                        a(href="/users") Usuarios
+                
+                li
+                    a(href="/logout") Cerrar Sesión
+            else
+                //- USUARIO NO LOGUEADO - Mostrar Sign up
+                li
+                    a(href="/signup") Sign up
