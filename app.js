@@ -9,50 +9,35 @@ const Movie = require("./models/films.model");
 const viewsRoutes = require("./routes/viewsRoutes");
 const favoritesRoutes = require("./routes/favoritesRoutes"); 
 const userRoutes = require("./routes/userRoutes");
+const filmsRoutes = require("./routes/filmsRoutes");    
 
 const app = express(); // Creando el servidor
 const port = 3000; // Puerto de pruebas
  
 const path = require("path");
 
-app.set("view engine", "pug");
-app.set("views", path.join(__dirname, "views"));
-
 // Leer fichero .env
 require('dotenv').config();
 
-// Habilitar recepción de JSON por mi backend
-// Parsear el body entrante a JSON
-app.use(express.json());
-app.use(express.static('public')); // Para servir archivos estáticos del front CSS, JS, assets
+// Configuración PUG 
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "views"));
 
 // Middlewares
+app.use(express.json());
+app.use(express.static('public')); // Para servir archivos estáticos del front CSS, JS, assets
 app.use(cookieParser());
+
+// Morgan middleware
 const error404 = require("./middlewares/error404");
 const morgan = require("./middlewares/morgan");
 app.use(morgan(':method :url :status :param[id] - :response-time ms :body'));
 
-// Configuración PUG
-app.set('view engine', 'pug');
-app.set('views','./views');
-
-app.use(express.json());
-app.use(express.static('public'));
-
 // Rutas
-const viewsRoutes = require("./routes/viewsRoutes");
-const favoritesRoutes = require("./routes/favoritesRoutes");
-const filmsRoutes = require("./routes/filmsRoutes");    
-// const userRoutes = require("./routes/userRoutes");      
-// const authRoutes = require("./routes/authRoutes");     
-
-// API
 app.use('/', viewsRoutes);
 app.use('/', favoritesRoutes); 
 app.use('/', userRoutes);  
 app.use('/', filmsRoutes);    
-// app.use('/', userRoutes);     
-// app.use('/', authRoutes);    
 
 // Manejo de rutas no encontradas
 app.use((req, res) => {
