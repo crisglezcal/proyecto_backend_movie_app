@@ -1,13 +1,26 @@
 const express = require("express"); // Importando express
 const cowsay = require("cowsay");
+<<<<<<< Updated upstream
 
 const connectDB = require("./config/db_mongo");
+=======
+const cookieParser = require('cookie-parser');
+// Leer fichero .env
+require('dotenv').config();
+
+
+const connectDB = require("./config/db_mongo");
+const Film = require("./models/films.model");
+
+// Importar rutas
+const viewsRoutes = require("./routes/viewsRoutes");
+const favoritesRoutes = require("./routes/favoritesRoutes"); 
+const authRoutes = require("./routes/authRoutes");
+>>>>>>> Stashed changes
 
 const app = express(); // Creando el servidor
 const port = 3000; // Puerto de pruebas
 
-// Leer fichero .env
-require('dotenv').config();
 
 // Habilitar recepción de JSON por mi backend
 // Parsear el body entrante a JSON
@@ -24,6 +37,33 @@ app.use(express.static('public')); // Para servir archivos estáticos del front 
 
 
 
+<<<<<<< Updated upstream
+=======
+// Y en los middlewares, agrega:
+app.use(cookieParser());
+
+// Usar rutas
+app.use('/', viewsRoutes);
+app.use('/', favoritesRoutes);
+app.use('/', authRoutes);
+
+// Manejo de rutas no encontradas
+app.use((req, res) => {
+  res.status(404).json({ 
+    error: 'Ruta no encontrada',
+    message: `La ruta ${req.originalUrl} no existe en este servidor` 
+  });
+});
+
+// Manejo de errores global
+app.use((error, req, res, next) => {
+  console.error('Error global:', error);
+  res.status(500).json({ 
+    error: 'Error interno del servidor',
+    message: error.message 
+  });
+});
+>>>>>>> Stashed changes
 
 // Iniciar el servidor
 app.listen(port, () => {
