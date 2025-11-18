@@ -1,38 +1,8 @@
 const pool = require('../config/db_sql');
 const Film = require('../models/films.model');
 
-// [GET] /favorites - Vista web de favoritos
-const getFavoritesView = async (req, res) => {
-    try {
 
-        // Del middleware de autenticación
-        const userId = req.user.id; 
-        
-        // Obtener favoritos de la base de datos
-        const result = await pool.query(
-            'SELECT id_film FROM fav_films WHERE id_user = $1',
-            [userId]
-        );
-        
-        const favoriteIds = result.rows.map(row => row.id_film);
-        const favorites = await Film.find({ id_film: { $in: favoriteIds } });
-        
-        res.render('favorites', {
-            title: 'Mis películas favoritas',
-            user: req.user,
-            favorites: favorites
-        });
-
-    } catch (error) {
-        console.error('Error en getFavoritesView:', error);
-        res.status(500).render('error', {
-            title: 'Error',
-            message: 'Error al cargar favoritos'
-        });
-    }
-};
-
-// [GET] /api/favorites - Obtener películas favoritas del usuario (API)
+// [GET] /api/favorites - Películas favoritas (API)
 
 const getFavorites = async (req, res) => {
     try {
@@ -153,7 +123,6 @@ const removeFavorite = async (req, res) => {
 };
 
 module.exports = {
-    getFavoritesView,
     getFavorites,
     addFavorite,
     removeFavorite

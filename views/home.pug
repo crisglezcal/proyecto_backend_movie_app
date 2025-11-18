@@ -1,0 +1,67 @@
+doctype html
+html(lang="es")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title= title
+  body
+    main.search-container
+      h1= title
+      p= message
+
+      // Formulario de búsqueda
+      form.search-form(method="GET", action="/search")
+        input.search-input(type="text", name="title", placeholder="Buscar por título..." value=(query || ""))
+        button.search-btn(type="submit") Buscar
+
+      // Si NO hay resultados
+      if noResults
+        p.no-results No hay resultados para "#{query}"
+
+      // Si hay resultados
+      if movies && movies.length
+        section.results
+          each movie in movies
+            article.movie-card
+              .movie-image
+                if movie.image
+                  img(src=movie.image, alt=movie.title)
+                else
+                  img(src="/images/no-image.png", alt="Imagen no disponible")
+
+              .movie-info
+                h2.movie-title
+                  a(href=`/search/${movie.title}`) #{movie.title}
+
+                p Año: #{movie.year}
+                p Director: #{movie.director}
+                p Género: #{movie.genre}
+                p Duración: #{movie.duration}
+
+              // Botón para añadir favoritos
+              form(method="POST", action="/api/favorites")
+                input(type="hidden", name="film_id", value=movie.id || movie._id)
+                button(type="submit") ❤️ Añadir a favoritos
+
+      script.
+        function addToFavorites(filmId) {
+          fetch('/api/favorites', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ film_id: filmId })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              alert('Película añadida a favoritos');
+            } else {
+              alert('Error: ' + data.error);
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('Error al añadir a favoritos');
+          });
+        }

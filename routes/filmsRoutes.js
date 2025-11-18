@@ -7,21 +7,9 @@ const Movie = require("../models/films.model");
 
 //------------- WEB -------------
 
-router.get("/search", async (req, res) => {
-  const title = req.query.title;
-
-  if (!title) {
-    return res.render("search", { movies: null });
-  }
-
-  // supongamos que llamas al controller...
-  const results = await buscarPeliculas(title);
-
-  res.render("search", {
-    query: title,
-    movies: results.movies,
-    noResults: results.movies.length === 0
-  });
+router.get("/movies", async (req, res) => {
+  const movies = await Movie.find();
+  res.render("admin/movies", { movies });
 });
 
 // Vista web del detalle

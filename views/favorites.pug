@@ -1,141 +1,141 @@
-//- //- EXTENDER PLANTILLA BASE: Esta vista hereda de "dashboard.pug" y reemplaza su bloque "content"
-//- extends dashboard
+//- EXTENDER PLANTILLA BASE: Esta vista hereda de "dashboard.pug" y reemplaza su bloque "content"
+extends dashboard
 
-//- //- INICIAR BLOQUE DE CONTENIDO: Todo lo que va aquí reemplazará el "block content" de dashboard.pug
-//- block content
+//- INICIAR BLOQUE DE CONTENIDO: Todo lo que va aquí reemplazará el "block content" de dashboard.pug
+block content
   
-//-   //- CONTENEDOR PRINCIPAL DE FAVORITOS
-//-   .favorites-container
+  //- CONTENEDOR PRINCIPAL DE FAVORITOS
+  .favorites-container
     
-//-     //- VERIFICAR SI EL USUARIO ESTÁ LOGUEADO: "user" viene del middleware de autenticación
-//-     if user
+    //- VERIFICAR SI EL USUARIO ESTÁ LOGUEADO: "user" viene del middleware de autenticación
+    if user
       
-//-       //- TÍTULO DE LA PÁGINA (solo para usuarios logueados)
-//-       h1.favorites-title Mis películas favoritas ❤️
+      //- TÍTULO DE LA PÁGINA (solo para usuarios logueados)
+      h1.favorites-title Mis películas favoritas ❤️
       
-//-       //- MENSAJE DE BIENVENIDA PERSONALIZADO: Muestra el nombre del usuario usando interpolación #{}
-//-       p.welcome-message ¡Hola, #[strong #{user.username}]! Estas son tus películas favoritas
+      //- MENSAJE DE BIENVENIDA PERSONALIZADO: Muestra el nombre del usuario usando interpolación #{}
+      p.welcome-message ¡Hola, #[strong #{user.username}]! Estas son tus películas favoritas
       
-//-       //- VERIFICAR SI HAY PELÍCULAS FAVORITAS: Comprueba que "favorites" existe y tiene al menos 1 elemento
-//-       if favorites && favorites.length > 0
+      //- VERIFICAR SI HAY PELÍCULAS FAVORITAS: Comprueba que "favorites" existe y tiene al menos 1 elemento
+      if favorites && favorites.length > 0
         
-//-         //- ESTADÍSTICAS - Mostrar cantidad de favoritos
-//-         .favorites-stats
-//-           p Tienes #[strong #{favorites.length}] película(s) en favoritos
+        //- ESTADÍSTICAS - Mostrar cantidad de favoritos
+        .favorites-stats
+          p Tienes #[strong #{favorites.length}] película(s) en favoritos
         
-//-         //- CONTENEDOR GRID PARA LAS PELÍCULAS: Diseño en cuadrícula para mostrar las películas
-//-         .films-grid
+        //- CONTENEDOR GRID PARA LAS PELÍCULAS: Diseño en cuadrícula para mostrar las películas
+        .films-grid
           
-//-           //- BUCLE POR CADA PELÍCULA EN FAVORITOS: "film" es variable temporal con los datos de cada película
-//-           each film in favorites
+          //- BUCLE POR CADA PELÍCULA EN FAVORITOS: "film" es variable temporal con los datos de cada película
+          each film in favorites
             
-//-             //- TARJETA INDIVIDUAL DE PELÍCULA: data-film-id identifica la película para JavaScript
-//-             .film-card(data-film-id=film.id_film || film._id)
+            //- TARJETA INDIVIDUAL DE PELÍCULA: data-film-id identifica la película para JavaScript
+            .film-card(data-film-id=film.id_film || film._id)
               
-//-               //- CONTENEDOR DEL POSTER/CARÁTULA
-//-               .film-poster
+              //- CONTENEDOR DEL POSTER/CARÁTULA
+              .film-poster
                 
-//-                 //- VERIFICAR SI LA PELÍCULA TIENE IMAGEN VÁLIDA: Comprueba que existe imagen y no es 'N/A'
-//-                 if film.image && film.image !== 'N/A'
+                //- VERIFICAR SI LA PELÍCULA TIENE IMAGEN VÁLIDA: Comprueba que existe imagen y no es 'N/A'
+                if film.image && film.image !== 'N/A'
                   
-//-                   //- MOSTRAR IMAGEN REAL: si la imagen no carga, muestra un placeholder
-//-                   img(src=film.image, alt=film.title, onerror="this.src='/images/placeholder.jpg'")
+                  //- MOSTRAR IMAGEN REAL: si la imagen no carga, muestra un placeholder
+                  img(src=film.image, alt=film.title, onerror="this.src='/images/placeholder.jpg'")
                 
-//-                 else
+                else
                   
-//-                   //- PLACEHOLDER CUANDO NO HAY IMAGEN
-//-                   .no-poster
-//-                     p No hay póster  
+                  //- PLACEHOLDER CUANDO NO HAY IMAGEN
+                  .no-poster
+                    p No hay póster  
                 
-//-                 //- BOTONES DE ACCIÓN SOBRE LA PELÍCULA
-//-                 .film-actions
+                //- BOTONES DE ACCIÓN SOBRE LA PELÍCULA
+                .film-actions
                   
-//-                   //- BOTÓN PARA ELIMINAR DE FAVORITOS
-//-                   button.remove-favorite-btn(type="button", title="Eliminar de favoritos") 🗑️
+                  //- BOTÓN PARA ELIMINAR DE FAVORITOS
+                  button.remove-favorite-btn(type="button", title="Eliminar de favoritos") 🗑️
               
-//-               //- INFORMACIÓN DETALLADA DE LA PELÍCULA
-//-               .film-info
+              //- INFORMACIÓN DETALLADA DE LA PELÍCULA
+              .film-info
                 
-//-                 //- TÍTULO DE LA PELÍCULA: El "=" significa que muestra el valor directamente
-//-                 h3.film-title= film.title
+                //- TÍTULO DE LA PELÍCULA: El "=" significa que muestra el valor directamente
+                h3.film-title= film.title
                 
-//-                 //- AÑO DE LA PELÍCULA (si existe)
-//-                 if film.year
-//-                   p.film-year 📅 Año: #{film.year} 
+                //- AÑO DE LA PELÍCULA (si existe)
+                if film.year
+                  p.film-year 📅 Año: #{film.year} 
                 
-//-                 //- DIRECTOR (si existe)
-//-                 if film.director
-//-                   p.film-director 👨‍💼 Director: #{film.director}
+                //- DIRECTOR (si existe)
+                if film.director
+                  p.film-director 👨‍💼 Director: #{film.director}
                 
-//-                 //- GÉNERO (si existe)
-//-                 if film.gender
-//-                   p.film-genre 🏷️ Género: #{film.gender}
+                //- GÉNERO (si existe)
+                if film.gender
+                  p.film-genre 🏷️ Género: #{film.gender}
                 
-//-                 //- DURACIÓN (si existe)
-//-                 if film.duration
-//-                   p.film-duration ⏱️ Duración: #{film.duration}
+                //- DURACIÓN (si existe)
+                if film.duration
+                  p.film-duration ⏱️ Duración: #{film.duration}
                 
-//-                 //- SINOPSIS (si existe)
-//-                 if film.sinopsis
-//-                   .film-plot
-//-                     h4 Sinopsis: 
-//-                     p= film.sinopsis  
+                //- SINOPSIS (si existe)
+                if film.sinopsis
+                  .film-plot
+                    h4 Sinopsis: 
+                    p= film.sinopsis  
                 
-//-                 //- ACTORES/REPARTO (si existe)
-//-                 if film.actors
-//-                   .film-actors
-//-                     h4 Reparto:  
-//-                     p= film.actors  
+                //- ACTORES/REPARTO (si existe)
+                if film.actors
+                  .film-actors
+                    h4 Reparto:  
+                    p= film.actors  
               
-//-               //- VALORACIONES/CRÍTICAS (si existen)
-//-               if film.ratings && film.ratings.length > 0
-//-                 .film-ratings
-//-                   h4 Valoraciones: 
+              //- VALORACIONES/CRÍTICAS (si existen)
+              if film.ratings && film.ratings.length > 0
+                .film-ratings
+                  h4 Valoraciones: 
                   
-//-                   //- BUCLE: POR CADA VALORACIÓN EN EL ARRAY
-//-                   each rating in film.ratings
-//-                     .rating-item
-//-                       //- Fuente de la valoración (ej: "Sensacine")
-//-                       strong #{rating.ref}: 
-//-                       //- Puntuación y comentario
-//-                       span #{rating.value} - #{rating.message}
+                  //- BUCLE: POR CADA VALORACIÓN EN EL ARRAY
+                  each rating in film.ratings
+                    .rating-item
+                      //- Fuente de la valoración (ej: "Sensacine")
+                      strong #{rating.ref}: 
+                      //- Puntuación y comentario
+                      span #{rating.value} - #{rating.message}
       
-//-       //- ESTADO CUANDO NO HAY FAVORITOS (array vacío)
-//-       else
-//-         .empty-favorites 
-//-           h2 No tienes películas favoritas 💔 
-//-           p ¡Empieza a agregar películas a tus favoritos desde la página de búsqueda!
-//-           //- BOTÓN PARA IR A EXPLORAR PELÍCULAS
-//-           a.btn-primary(href="/films") Explorar películas 🔎
+      //- ESTADO CUANDO NO HAY FAVORITOS (array vacío)
+      else
+        .empty-favorites 
+          h2 No tienes películas favoritas 💔 
+          p ¡Empieza a agregar películas a tus favoritos desde la página de búsqueda!
+          //- BOTÓN PARA IR A EXPLORAR PELÍCULAS
+          a.btn-primary(href="/films") Explorar películas 🔎
     
-//-     //- USUARIO NO LOGUEADO - MOSTRAR MENSAJE DE ACCESO DENEGADO
-//-     else
-//-       .not-logged-in
-//-         .warning-message 
-//-           h2 Acceso restringido
-//-           p Para ver tus películas favoritas necesitas estar registrado e iniciar sesión
+    //- USUARIO NO LOGUEADO - MOSTRAR MENSAJE DE ACCESO DENEGADO
+    else
+      .not-logged-in
+        .warning-message 
+          h2 Acceso restringido
+          p Para ver tus películas favoritas necesitas estar registrado e iniciar sesión
           
-//-           //- BOTONES DE ACCIÓN PARA AUTENTICACIÓN
-//-           .auth-actions
-//-             a.btn-secondary(href="/signup") Registrarse
+          //- BOTONES DE ACCIÓN PARA AUTENTICACIÓN
+          .auth-actions
+            a.btn-secondary(href="/signup") Registrarse
         
-//-         //- SECCIÓN DE BENEFICIOS PARA MOTIVAR REGISTRO
-//-         .benefits
-//-           h3 ¿Por qué registrarte?  
-//-           ul  
-//-             li ✅ Guarda tus películas favoritas
-//-             li ✅ Recibe recomendaciones
+        //- SECCIÓN DE BENEFICIOS PARA MOTIVAR REGISTRO
+        .benefits
+          h3 ¿Por qué registrarte?  
+          ul  
+            li ✅ Guarda tus películas favoritas
+            li ✅ Recibe recomendaciones
 
 
-//-   //- MODAL/POPUP DE CONFIRMACIÓN (solo para usuarios logueados)
-//-   //- Ventana emergente para confirmar eliminación
-//-   if user
-//-     #confirmModal.modal  
-//-       .modal-content  
-//-         h3 ¿Eliminar de favoritos?  
-//-         p ¿Estás seguro de que quieres eliminar esta película de tus favoritos?
+  //- MODAL/POPUP DE CONFIRMACIÓN (solo para usuarios logueados)
+  //- Ventana emergente para confirmar eliminación
+  if user
+    #confirmModal.modal  
+      .modal-content  
+        h3 ¿Eliminar de favoritos?  
+        p ¿Estás seguro de que quieres eliminar esta película de tus favoritos?
         
-//-         //- BOTONES DE ACCIÓN DEL MODAL
-//-         .modal-actions
-//-           button#confirmCancel.btn-secondary Cancelar  
-//-           button#confirmDelete.btn-danger Eliminar  
+        //- BOTONES DE ACCIÓN DEL MODAL
+        .modal-actions
+          button#confirmCancel.btn-secondary Cancelar  
+          button#confirmDelete.btn-danger Eliminar  

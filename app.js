@@ -6,6 +6,8 @@ require('dotenv').config();
 const connectDB = require("./config/db_mongo");
 const cookieParser = require('cookie-parser');
 
+const Movie = require("./models/films.model");  
+
 // Importar rutas
 const viewsRoutes = require("./routes/viewsRoutes");
 const favoritesRoutes = require("./routes/favoritesRoutes"); 
