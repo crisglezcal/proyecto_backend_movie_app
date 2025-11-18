@@ -75,7 +75,7 @@ const objectSchema = {
 // Crear Esquema
 const filmsSchema = mongoose.Schema(objectSchema);
 
-// Crear Colección
+// Crear Colección y el tener el modelo que tengo que importar al resto de archivos donde interactue con mi BD de Mongo
 const Film = mongoose.model("Films", filmsSchema);
 
 /* 

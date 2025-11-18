@@ -1,5 +1,4 @@
-// controllers/movieController.js
-const Film = require('../models/films.model');  // ← Usar Film como alias
+const Film = require('../models/films.model');  //esto me trae el modelo especial de Mongoose para poder interactuar con mi colección
 require('dotenv').config(); //para cargar
 const fetchFilm = require('../utils/fetchFilms');
 
@@ -11,28 +10,26 @@ async function getMovieByTitle(req, res) {
   try {
     // 1. Buscar primero en OMDB
     const film = await fetchFilm.fetchOneFilm(title); 
-    return res.status(200).json(film);
-
-  } catch (error) {
-    // Si OMDB devuelve 404, intentamos buscar en MongoDB
-    if (error.status === 404) {
-      try {
-        const localFilm = await Film.findOne({ title: new RegExp(`^${title}$`, 'i') });
-
-        if (localFilm) {
-          return res.status(200).json(localFilm);
-        } else {
-          return res.status(404).json({ message: 'Film not found in OMDB or local database' });
-        }
-      } catch (dbError) {
-        console.error(dbError);
-        return res.status(500).json({ message: 'Database error' });
-      }
+   if (film) {
+      return res.status(200).json(film);
+    }
+    const localFilm = await Film.findOne({     // 2. Si no está en OMDB, buscar en MongoDB
+      Title: new RegExp(`^${title}$`, 'i') // búsqueda insensible a mayúsculas
+    });
+    if (localFilm) {
+      return res.status(200).json(localFilm);
     }
 
-    // Otros errores (red, API caída, etc.)
-    console.error(error);
-    return res.status(500).json({ message: 'Internal server error' });
+    return res  // 3. Si no existe en ninguna fuente
+      .status(404)
+      .json({ message: 'Film not found in OMDB or local database' });
+
+  } catch (error) {
+    console.error("Error retrieving movie:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message
+    });
   }
 }
 
