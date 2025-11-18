@@ -1,27 +1,43 @@
-const fetchFilm = require("../utils/fetchFilms");
-const Film = require("../models/films.model");
+const Film = require('../models/films.model');  // ← Usar Film como alias
+require('dotenv').config(); //para cargar
+const fetchFilm = require('../utils/fetchFilms');
 
-async function renderMovieDetail(req, res) {
+// [GET] /search/:title // Buscar películas
+async function getAllMovies(req, res) {
   const title = req.params.title;
 
   try {
-    let film = await fetchFilm(title);
+    // 1. Buscar primero en OMDB
+    const film = await fetchFilm.fetchAllFilms(title);
 
-    // Si no existe en OMDB, buscamos en MongoDB
-    if (!film) {
-      film = await Film.findOne({ title: new RegExp(`^${title}$`, "i") });
+    if (film) {
+      return res.status(200).json(film);
     }
 
-    if (!film) {
-      return res.render("user/movieDetail", { movie: null, error: "Película no encontrada" });
+    // 2. Si no está en OMDB, buscar en MongoDB
+    const localFilm = await Film.findOne({
+      title: new RegExp(`^${title}$`, 'i') // búsqueda insensible a mayúsculas
+    });
+
+    if (localFilm) {
+      return res.status(200).json(localFilm);
     }
 
-    res.render("user/movieDetail", { movie: film });
+    // 3. Si no existe en ninguna fuente
+    return res
+      .status(404)
+      .json({ message: 'Film not found in OMDB or local database' });
 
   } catch (error) {
-    console.error(error);
-    res.render("user/movieDetail", { movie: null, error: "Error interno" });
+    console.error("Error retrieving movie:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message
+    });
   }
 }
 
-module.exports = { renderMovieDetail };
+
+module.exports = {
+  getAllMovies
+};

@@ -4,13 +4,13 @@ require('dotenv').config(); //para cargar
 const fetchFilm = require('../utils/fetchFilms');
 
 
-// [GET] /api/film/:title  // Buscar película por título (Usuario y Admin)
+// [GET] /api/film/:title  // Buscar una película por título (Usuario y Admin)
 async function getMovieByTitle(req, res) {
   const title = req.params.title;
 
   try {
     // 1. Buscar primero en OMDB
-    const film = await fetchFilm(title); 
+    const film = await fetchFilm.fetchOneFilm(title); 
     return res.status(200).json(film);
 
   } catch (error) {
@@ -74,10 +74,10 @@ function updateMovie(req, res) {
 
 
 // [DELETE] /api/film Eliminar película (ADMIN)
-function deleteMovie(req, res) {
+async function deleteMovie(req, res) {
   try {
-    const { id } = req.body;
-    res.status(200).json({ id, message: `Se ha borrado la película con ID: ${id}` });
+    const { title } = req.body;
+    res.status(200).json({ title, message: `Se ha borrado la película con título: ${title}` });
   } catch (error) {
     res.status(500).json({ message: 'Internal server error' });
   }
