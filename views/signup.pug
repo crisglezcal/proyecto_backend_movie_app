@@ -1,0 +1,50 @@
+extends dashboard
+
+block content
+
+  .auth-container
+    //- Solo mostrar formularios si NO hay usuario logueado
+    if !user
+      .auth-tabs
+        button.tab-button.active(data-tab="register") Registrarse
+        button.tab-button(data-tab="login") Iniciar Sesión
+
+      //- Formulario de registro
+      .tab-content#register-tab
+        h2 Crear Cuenta
+        form(action="/register" method="POST")
+          .form-group
+            label(for="username") Nombre de usuario:
+            input(type="text" name="username" id="username" required)
+          .form-group
+            label(for="email") Correo electrónico:
+            input(type="email" name="email" id="email" required)
+          .form-group
+            label(for="password") Contraseña:
+            input(type="password" name="password" id="password" required minlength="6")
+          .form-group
+            label(for="confirmPassword") Confirmar contraseña:
+            input(type="password" name="confirmPassword" id="confirmPassword" required)
+          button.btn-primary(type="submit") Registrarse
+
+      //- Formulario de Inicio de sesión
+      .tab-content#login-tab(style="display: none;")
+        h2 Iniciar sesión
+        form(action="/login" method="POST")
+          .form-group
+            label(for="loginEmail") Correo electrónico:
+            input(type="email" name="email" id="loginEmail" required)
+          .form-group
+            label(for="loginPassword") Contraseña:
+            input(type="password" name="password" id="loginPassword" required)
+          button.btn-primary(type="submit") Iniciar sesión
+
+      //- Separador
+      .auth-separator
+        span O continúa con
+
+      //- Botón de Google OAuth
+      .social-auth
+        a.btn-google(href="/auth/google")
+          img(src="/images/google-icon.svg" alt="Google" width="20" height="20")
+          | Continuar con Google
