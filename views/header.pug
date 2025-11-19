@@ -21,8 +21,10 @@ header
                     li
                         a(href="/users") Usuarios
                 
+                // CERRAR SESIÓN como formulario POST
                 li
-                    a(href="/logout") Cerrar sesión
+                    form(action="/api/logout", method="POST")
+                        button(type="submit" class="logout-button") Cerrar sesión
             else
                 //- USUARIO NO LOGUEADO - Mostrar Sign up
                 li

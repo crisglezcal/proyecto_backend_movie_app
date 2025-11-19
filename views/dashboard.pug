@@ -1,7 +1,11 @@
 doctype html
 html
   head
-    title Panel de control
+    meta(charset="UTF-8")
+    meta(http-equiv="X-UA-Compatible", content="IE=edge")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet", href="/css/style.css")
+    title Buscador de Películas
   body
     include ./header.pug
     main 
@@ -9,7 +13,6 @@ html
           h1 Bienvenido #{user.name}
           a(href="/search") Buscar películas
           a(href="/movies") Mis películas
-          form(action="/api/logout" method="POST")
-          button(type="submit") Salir
+  
     include ./footer.pug
     script(src="/js/script.js")

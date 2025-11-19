@@ -14,12 +14,12 @@ html(lang="en")
             h1 ¡Busca tu película!
 
             // Contenedor de búsqueda centrado
-            div.search-container
+            article.search-container
                 input#movieName(type="text" placeholder="Escribe el nombre de una película…")
                 button#searchButton Buscar
 
             // Contenedor donde se mostrarán los resultados
-            #result
+            article#result.movie-container
            
                         
         include ./footer.pug
