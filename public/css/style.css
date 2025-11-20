@@ -123,6 +123,15 @@ nav a:hover {
     background: #e50914; 
 }
 
+.tab-link {
+    color:white;
+    text-decoration: none;
+}
+
+.tab-link:hover{
+    background: #e50914; 
+}
+
 /* === CONTENIDO DE LOS FORMULARIOS === */
 .tab-content {
     display: block;

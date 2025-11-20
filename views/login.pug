@@ -5,26 +5,20 @@ block content
     //- Solo mostrar formularios si NO hay usuario logueado
     if !user
       .auth-tabs
-        button.tab-button.active(data-tab="register") Registrarse
-        button.tab-button(data-tab="login") Iniciar sesión
+        a.tab-link.active(href="#", data-tab="signup") Registro
+        a.tab-link(href="#", data-tab="login") Inicio de sesión
 
       //- Formulario de registro
       .tab-content#register-tab
-        h2 Crear cuenta
+        h2 Iniciar sesión
         form(action="/api/signup" method="POST")  
-          .form-group
-            label(for="username") Nombre de usuario:
-            input(type="text" name="username" id="username" required)
           .form-group
             label(for="email") Correo electrónico:
             input(type="email" name="email" id="email" required)
           .form-group
             label(for="password") Contraseña:
             input(type="password" name="password" id="password" required minlength="6")
-          .form-group
-            label(for="confirmPassword") Confirmar contraseña:
-            input(type="password" name="confirmPassword" id="confirmPassword" required)
-          button.btn-primary(type="submit") Registrarse
+          button.btn-primary(type="submit") Iniciar sesión
 
       //- Formulario de Inicio de sesión
       .tab-content#login-tab(style="display: none;")
