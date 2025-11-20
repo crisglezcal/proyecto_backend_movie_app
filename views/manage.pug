@@ -3,7 +3,7 @@ extends dashboard.pug
 block content
 
   .container
-    h1 Gestionar películas
+    h1 Panel de gestión
 
     .formulario
       h2 Crear una nueva película
@@ -64,9 +64,9 @@ block content
           )
           small.form-help Dejar vacío para no agregar opiniones
 
-        button(type="submit") Create Movie
+        button.crear-pelicula-btn(type="submit") Crear película
 
-    h2 Películas disponibles en la base de datos
+    h3 Películas disponibles en la base de datos
     
     .peliculas-lista
       each pelicula in peliculas
@@ -88,11 +88,11 @@ block content
           .botones-accion
             button.edit-btn(
               onclick=`editMovie(${JSON.stringify(pelicula)})`
-            ) Edit Movie
+            ) Editar 
             
             button.delete-btn(
               onclick=`deleteMovie('${pelicula.Title}')`
-            ) Delete Movie
+            ) Borrar 
 
       else
         p No hay películas en la base de datos

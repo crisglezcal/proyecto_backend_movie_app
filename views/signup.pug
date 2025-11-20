@@ -2,8 +2,8 @@ extends dashboard
 
 block content
   .auth-container
-    //- Solo mostrar formularios si NO hay usuario logueado
     if !user
+      //- Tabs para alternar entre Registro e Inicio de sesión
       .auth-tabs
         a.tab-link.active(href="#", data-tab="signup") Registro
         a.tab-link(href="#", data-tab="login") Inicio de sesión
@@ -11,10 +11,13 @@ block content
       //- Formulario de registro
       .tab-content#register-tab
         h2 Crear cuenta
-        form(action="/api/signup" method="POST")  
+        form(action="/api/signup" method="POST")
           .form-group
             label(for="username") Nombre de usuario:
             input(type="text" name="username" id="username" required)
+          .form-group
+            label(for="surname") Apellido:
+            input(type="text" name="surname" id="surname" required)
           .form-group
             label(for="email") Correo electrónico:
             input(type="email" name="email" id="email" required)
@@ -26,10 +29,10 @@ block content
             input(type="password" name="confirmPassword" id="confirmPassword" required)
           button.btn-primary(type="submit") Registrarse
 
-      //- Formulario de Inicio de sesión
+      //- Formulario de inicio de sesión
       .tab-content#login-tab(style="display: none;")
         h2 Iniciar sesión
-        form(action="/api/login" method="POST")  // ← CAMBIADO: /api/login
+        form(action="/api/login" method="POST")
           .form-group
             label(for="loginEmail") Correo electrónico:
             input(type="email" name="email" id="loginEmail" required)
@@ -38,7 +41,7 @@ block content
             input(type="password" name="password" id="loginPassword" required)
           button.btn-primary(type="submit") Iniciar sesión
 
-      //- Separador
+      //- Separador para redes sociales
       .auth-separator
         span O continúa con
 
@@ -47,5 +50,27 @@ block content
         a.btn-google(href="/auth/google")
           img(src="images/google-icon.webp" alt="Google" width="20" height="20")
           |    Google
-    
-  
+
+  //- Script para alternar tabs
+  script.
+    const tabs = document.querySelectorAll('.tab-link');
+    const registerTab = document.getElementById('register-tab');
+    const loginTab = document.getElementById('login-tab');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', e => {
+        e.preventDefault();
+        // Alternar clase activa
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        // Mostrar contenido correspondiente
+        if (tab.dataset.tab === 'signup') {
+          registerTab.style.display = 'block';
+          loginTab.style.display = 'none';
+        } else {
+          registerTab.style.display = 'none';
+          loginTab.style.display = 'block';
+        }
+      });
+    });
