@@ -1,4 +1,4 @@
-// const pool  = require('../config/db_sql');
+const pool  = require('../config/db_sql');
 const Film = require('../models/films.model');
 
 
@@ -6,32 +6,48 @@ const Film = require('../models/films.model');
 const getFavoritesView = async (req, res) => {
     try {
 
-        // Del middleware de autenticación
-        const userId = req.user.id; 
+        // 1. Comprobación
+        if (!req.user) {
+            return res.status(401).json({ message: "Usuario no autenticado (req.user no existe)" });
+        }
+
+        const userId = req.user.id;
         
-        // Obtener favoritos de la base de datos
+
+        // 2. Favoritos en SQL
         const result = await pool.query(
-            'SELECT id_film FROM fav_films WHERE id_user = $1',
+            'SELECT film_id FROM favorite_films WHERE id_user = $1',
             [userId]
         );
+
+        const favoriteIds = result.rows.map(row => row.film_id);
+        console.log(favoriteIds);
         
-        const favoriteIds = result.rows.map(row => row.id_film);
-        const favorites = await Film.find({ id_film: { $in: favoriteIds } });
+
+        // 3. Películas en Mongo
+        const favorites = await Film.find({ _id: { $in: favoriteIds } });
+        console.log(favorites);
         
+
+        //4. Renderizar
         res.render('favorites', {
             title: 'Mis películas favoritas',
             user: req.user,
-            favorites: favorites
+            userId: req.user.id,
+            favorites
         });
+
+        //res.json({favorites})
 
     } catch (error) {
         console.error('Error en getFavoritesView:', error);
-        res.status(500).render('error', {
+        res.status(500).json({
             title: 'Error',
             message: 'Error al cargar favoritos'
         });
     }
-}
+};
+
 // [GET] /api/favorites - Películas favoritas (API)
 
 const getFavorites = async (req, res) => {
@@ -39,7 +55,7 @@ const getFavorites = async (req, res) => {
         const userId = req.user.id;
         
         const result = await pool.query(
-            'SELECT id_film FROM fav_films WHERE id_user = $1',
+            'SELECT film_id FROM favorite_films WHERE id_user = $1',
             [userId]
         );
         
@@ -85,7 +101,7 @@ const addFavorite = async (req, res) => {
 
         // Verificar si ya es favorita
         const existingFavorite = await pool.query(
-            'SELECT * FROM fav_films WHERE id_user = $1 AND id_film = $2',
+            'SELECT * FROM favorite_films WHERE id_user = $1 AND film_id = $2',
             [userId, film_id]
         );
 
@@ -98,7 +114,7 @@ const addFavorite = async (req, res) => {
 
         // Añadir a favoritos
         await pool.query(
-            'INSERT INTO fav_films (id_user, id_film) VALUES ($1, $2)',
+            'INSERT INTO fav_films (id_user, film_id) VALUES ($1, $2)',
             [userId, film_id]
         );
 
@@ -117,6 +133,9 @@ const addFavorite = async (req, res) => {
     }
 };
 
+
+
+
 // [DELETE] /api/favorites/:id - Eliminar película de favoritos
 
 const removeFavorite = async (req, res) => {
@@ -126,7 +145,7 @@ const removeFavorite = async (req, res) => {
 
         // Eliminar de favoritos
         const result = await pool.query(
-            'DELETE FROM fav_films WHERE id_user = $1 AND id_film = $2',
+            'DELETE FROM fav_films WHERE id_user = $1 AND film_id = $2',
             [userId, film_id]
         );
 

@@ -2,7 +2,7 @@
 const favButton = document.querySelector(".add-fav");
 
 if (favButton) {
-  favButton.addEventListener("click", (e) => {
+  favButton?.addEventListener("click", (e) => {
     e.preventDefault();
     const form = favButton.closest("form");
     

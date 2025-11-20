@@ -284,13 +284,14 @@ h2 {
 
 h1 {
     padding: 15px;
-    position: relative;
     text-align: center;
 }
 
 /* === DETALLE DE PELÍCULA === */
 .movie-detail-container {
     display: flex;
+    flex-direction: column;  /* ✔ coloca el botón arriba */
+    align-items: center; 
     justify-content: center;
     padding: 20px;
     color:white;
@@ -383,7 +384,7 @@ ul.opinions li {
 }
 
 .back-button {
-    display: inline-block;
+    display: block;
     margin-bottom: 20px;
     padding: 20px;
     color: #ff4c4c;
@@ -391,19 +392,6 @@ ul.opinions li {
     font-weight: bold;
     transition: color 0.25s ease;
 }
-
-/* === RESPONSIVE PARA DETALLE DE PELÍCULA === */
-@media (max-width: 768px) {
-    .detail-card {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .detail-card .right {
-        flex: 1 1 100%;
-    }
-}
-
 
 
 /* Enlaces estilo botón */
@@ -471,23 +459,31 @@ footer {
 
 /* === RESPONSIVO === */
 @media (max-width: 768px) {
-    /* Tarjetas de películas */
+
+    /* BACK BUTTON */
+    .back-button {
+        margin-bottom: 0;
+        margin-top: 10px;
+        display: block;
+    }
+
+    /* Tarjetas */
     .movie-container {
         flex-direction: column;
-        align-items: center; /* centra las tarjetas */
+        align-items: center;
     }
     
     .movie-card {
-        width: 90%; /* opcional: tarjetas más grandes y centradas */
+        width: 90%;
         max-width: none;
     }
 
-    /* NAVBAR RESPONSIVO */
+    /* NAVBAR */
     nav .nav-links {
-        display: none; /* ocultar links por defecto en móvil */
+        display: none;
         flex-direction: column;
         position: absolute;
-        top: 60px; /* debajo del header */
+        top: 60px;
         right: 10px;
         background-color: #111;
         border-radius: 8px;
@@ -496,12 +492,24 @@ footer {
     }
 
     nav .nav-links.active {
-        display: flex; /* mostrar cuando se haga click en hamburguesa */
+        display: flex;
     }
 
     .menu-toggle {
-        display: block; /* mostrar botón hamburguesa en móvil */
+        display: block;
+    }
+
+    /* Detalle película */
+    .detail-card {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .detail-card .right {
+        width: 90%;
+        max-width: none;
     }
 }
+
 
 

@@ -1,5 +1,5 @@
 // BOTON BUSCAR PELICULAS 
-document.getElementById("searchButton").addEventListener("click", async () => {
+document.getElementById("searchButton")?.addEventListener("click", async () => {
     const title = document.getElementById("movieName").value.trim();
 
     if (!title) {

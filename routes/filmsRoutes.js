@@ -13,6 +13,9 @@ router.get("/search/:title", movieWeb.getAllMovies);
 // GET pelicula en detalle
 router.get("/movie/:title", movieWeb.renderMovieDetail);
 
+// GET página de gestión (SOLO ADMIN) - NUEVA RUTA
+router.get("/manage", movieWeb.renderManagePage);
+
 
 // -------------API--------------
 

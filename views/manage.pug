@@ -1,0 +1,292 @@
+extends dashboard.pug
+
+block content
+
+  .container
+    h1 Gestionar películas
+
+    .formulario
+      h2 Crear una nueva película
+      form#createMovieForm
+        .campo
+          label Title
+          input(type="text", name="Title", required)
+        
+        .campo
+          label Year
+          input(type="number", name="Year", required)
+        
+        .campo
+          label Rated
+          input(type="text", name="Rated", required)
+        
+        .campo
+          label Released
+          input(type="text", name="Released", required)
+        
+        .campo
+          label Runtime
+          input(type="text", name="Runtime", required)
+        
+        .campo
+          label Genre
+          input(type="text", name="Genre", required)
+        
+        .campo
+          label Director
+          input(type="text", name="Director", required)
+        
+        .campo
+          label Actors
+          textarea(name="Actors", required)
+        
+        .campo
+          label Plot
+          textarea(name="Plot", required)
+        
+        .campo
+          label Poster
+          input(type="url", name="Poster", required)
+        
+        .campo
+          label Ratings (Opcional - Formato JSON)
+          textarea(
+            name="Ratings", 
+            placeholder='[{"Source": "IMDB", "Value": "8.5/10"}]'
+          )
+          small.form-help Dejar vacío para no agregar ratings
+        
+        .campo
+          label Opinions (Opcional - Formato JSON)
+          textarea(
+            name="Opinions",
+            placeholder='[{"user": "Juan", "rating": 5, "comment": "Excelente"}]'
+          )
+          small.form-help Dejar vacío para no agregar opiniones
+
+        button(type="submit") Create Movie
+
+    h2 Películas disponibles en la base de datos
+    
+    .peliculas-lista
+      each pelicula in peliculas
+        .pelicula-tarjeta
+          if pelicula.Poster
+            img(src=pelicula.Poster, alt=pelicula.Title)
+          
+          .pelicula-info
+            h3= pelicula.Title
+            p= `(${pelicula.Year})`
+            p= `${pelicula.Genre}`
+            p= pelicula.Plot
+            
+            .detalles
+              p Director: #{pelicula.Director}
+              p Runtime: #{pelicula.Runtime}
+              p Rated: #{pelicula.Rated}
+
+          .botones-accion
+            button.edit-btn(
+              onclick=`editMovie(${JSON.stringify(pelicula)})`
+            ) Edit Movie
+            
+            button.delete-btn(
+              onclick=`deleteMovie('${pelicula.Title}')`
+            ) Delete Movie
+
+      else
+        p No hay películas en la base de datos
+
+
+  script.
+
+    // ============================================================ CREAR PELÍCULA ============================================================
+    
+    document.getElementById('createMovieForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData);
+      
+      // Hacer el título único añadiendo timestamp
+      const originalTitle = data.Title;
+      data.Title = originalTitle + ' - ' + Date.now();
+      
+      console.log('Título original:', originalTitle);
+      console.log('Título único:', data.Title);
+      
+      // Procesar Ratings
+      if (data.Ratings && data.Ratings.trim() !== '') {
+        try {
+          data.Ratings = JSON.parse(data.Ratings.trim());
+        } catch (error) {
+          alert('Error en Ratings: Formato JSON inválido');
+          return;
+        }
+      } else {
+        data.Ratings = [];
+      }
+      
+      // Procesar Opinions
+      if (data.Opinions && data.Opinions.trim() !== '') {
+        try {
+          data.Opinions = JSON.parse(data.Opinions.trim());
+        } catch (error) {
+          alert('Error en Opinions: Formato JSON inválido');
+          return;
+        }
+      } else {
+        data.Opinions = [];
+      }
+      
+      try {
+        const response = await fetch('/api/movie', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        
+        if (response.ok) {
+          alert('Película creada exitosamente');
+          this.reset();
+          location.reload();
+        } else {
+          alert('Error: ' + result.message);
+        }
+      } catch (error) {
+        console.error('Error completo:', error);
+        alert('Error de conexión');
+      }
+    });
+
+    // ============================================================ ELIMINAR PELÍCULA ============================================================
+    
+    async function deleteMovie(title) {
+        if (!confirm('¿Estás seguro de que quieres borrar "' + title + '"?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/movie/' + encodeURIComponent(title), {
+                method: 'DELETE'
+            });
+
+            const result = await response.json();
+            
+            if (response.ok) {
+                alert(result.message);
+                location.reload();
+            } else {
+                alert(result.message);
+            }
+        } catch (error) {
+            alert('Error eliminando película');
+        }
+    }
+
+    // ============================================================ EDITAR PELÍCULA ============================================================
+
+    async function editMovie(pelicula) {
+        console.log('Datos originales de la película:', pelicula);
+        
+        // Pedir los campos a editar
+        const newTitle = prompt('Título:', pelicula.Title);
+        if (newTitle === null) return;
+        
+        const newYear = prompt('Año:', pelicula.Year);
+        const newRated = prompt('Rated:', pelicula.Rated);
+        const newReleased = prompt('Released:', pelicula.Released);
+        const newRuntime = prompt('Runtime:', pelicula.Runtime);
+        const newGenre = prompt('Genre:', pelicula.Genre);
+        const newDirector = prompt('Director:', pelicula.Director);
+        const newActors = prompt('Actors:', pelicula.Actors);
+        const newPlot = prompt('Plot:', pelicula.Plot);
+        const newPoster = prompt('Poster:', pelicula.Poster);
+        
+        // Procesar Ratings
+        let ratingsText = '[]';
+        try {
+            ratingsText = JSON.stringify(pelicula.Ratings || []);
+        } catch (error) {
+            ratingsText = '[]';
+        }
+        const updatedRatings = prompt('Ratings (JSON):', ratingsText);
+        
+        // Procesar Opinions
+        let opinionsText = '[]';
+        try {
+            opinionsText = JSON.stringify(pelicula.Opinions || []);
+        } catch (error) {
+            opinionsText = '[]';
+        }
+        const updatedOpinions = prompt('Opiniones (JSON):', opinionsText);
+
+        // Procesar Ratings para enviar al servidor
+        let finalRatings = pelicula.Ratings || [];
+        if (updatedRatings && updatedRatings.trim() !== '') {
+            try {
+                finalRatings = JSON.parse(updatedRatings);
+            } catch (error) {
+                alert('Error: Formato JSON inválido en Ratings');
+                return;
+            }
+        }
+
+        // Procesar Opinions para enviar al servidor
+        let finalOpinions = pelicula.Opinions || [];
+        if (updatedOpinions && updatedOpinions.trim() !== '') {
+            try {
+                finalOpinions = JSON.parse(updatedOpinions);
+            } catch (error) {
+                alert('Error: Formato JSON inválido en Opinions');
+                return;
+            }
+        }
+
+        // Crear objeto con todos los datos actualizados
+        const updatedData = {
+            id: pelicula._id,
+            Title: newTitle || pelicula.Title,
+            Year: newYear ? parseInt(newYear) : pelicula.Year,
+            Rated: newRated || pelicula.Rated,
+            Released: newReleased || pelicula.Released,
+            Runtime: newRuntime || pelicula.Runtime,
+            Genre: newGenre || pelicula.Genre,
+            Director: newDirector || pelicula.Director,
+            Actors: newActors || pelicula.Actors,
+            Plot: newPlot || pelicula.Plot,
+            Poster: newPoster || pelicula.Poster,
+            Ratings: finalRatings,
+            Opinions: finalOpinions
+        };
+
+        console.log('Datos a enviar al servidor:', updatedData);
+
+        try {
+            // Enviar la actualización
+            const updateResponse = await fetch('/api/movie', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedData)
+            });
+
+            const result = await updateResponse.json();
+            
+            console.log('Respuesta del servidor:', result);
+            
+            if (updateResponse.ok) {
+                alert('Película actualizada exitosamente');
+                location.reload();
+            } else {
+                alert('Error: ' + result.message);
+            }
+        } catch (error) {
+            alert('Error actualizando película: ' + error.message);
+        }
+    }
