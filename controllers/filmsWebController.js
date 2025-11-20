@@ -76,13 +76,31 @@ const renderMovieDetail = async (req, res) => {
   }
 };
 
-module.exports = { renderMovieDetail };
-
-
-
-
+// [GET] /manage - Renderizar página de gestión (SOLO ADMIN)
+const renderManagePage = async (req, res) => {
+  try {
+    // Verificar que el usuario está autenticado y es administrador
+    if (!req.user) {
+      return res.redirect('/login');
+    }
+    // Verificar rol - usa 'role' que es lo que tienes en tu BD SQL
+    if (req.user.role !== 'admin') {
+      return res.redirect('/dashboard');
+    }
+    // Obtener todas las películas de MongoDB
+    const peliculas = await Film.find().sort({ Title: 1 });
+    res.render('manage', {
+      peliculas,
+      user: req.user
+    });
+  } catch (error) {
+    console.error('Error loading manage page:', error);
+    res.redirect('/dashboard');
+  }
+};
 module.exports = {
   getAllMovies,
   renderSearch,
-  renderMovieDetail
+  renderMovieDetail,
+  renderManagePage
 };

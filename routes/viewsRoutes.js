@@ -24,6 +24,7 @@ router.get('/signup', (req, res) => {
   res.render('signup', { user: req.user });
 });
 
+
 // [GET] http://localhost:3000/login - Vista de login
 router.get('/login', (req, res) => {
   // Si ya está logueado, redirigir al dashboard

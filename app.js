@@ -87,7 +87,7 @@ connectDB().then(() => {
   app.listen(port, () => {
     console.log(
       cowsay.say({
-        text: `Movie App funcionando en http://localhost:${port}`,
+        text: `Movie App funcionando en http://localhost:${port}/dashboard`,
         f: "owl", 
       })
     );

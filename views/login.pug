@@ -5,8 +5,8 @@ block content
     //- Solo mostrar formularios si NO hay usuario logueado
     if !user
       .auth-tabs
-        a.tab-link.active(href="#", data-tab="register") Registrarse
-        a.tab-link(href="#", data-tab="login") Iniciar sesión
+        button.tab-button.active(data-tab="register") Registrarse
+        button.tab-button(data-tab="login") Iniciar sesión
 
       //- Formulario de registro
       .tab-content#register-tab

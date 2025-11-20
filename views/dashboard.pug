@@ -14,10 +14,10 @@ html(lang="es")
     main
       block content
         // Contenido por defecto para dashboard
-        h1 Bienvenido #{user.name}
+        h1 Bienvenido
         .dashboard-container
           a.btn-link(href="/search") Buscar películas
-          a.btn-link(href="/movies") Mis películas
+          a.btn-link(href="/favorites") Mis películas
 
     include ./footer.pug
     script(src="/js/script.js")

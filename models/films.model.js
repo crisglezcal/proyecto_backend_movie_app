@@ -1,12 +1,10 @@
 const mongoose = require("mongoose");
 require('../config/db_mongo') // Conexión a BDD MongoDB
-
 // Crear Objeto
 const objectSchema = {
     Title: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     Year: {
         type: Number,
@@ -51,11 +49,11 @@ const objectSchema = {
     Ratings: [
         {
             type: {
-                type: String, 
+                type: String,
                 required: true
             },
             Source: {
-                type: String, 
+                type: String,
                 required: true
             },
             Value: {
@@ -71,10 +69,8 @@ const objectSchema = {
         }
     ]
 }
-
 // Crear Esquema
 const filmsSchema = mongoose.Schema(objectSchema);
-
 // Crear Colección y el tener el modelo que tengo que importar al resto de archivos donde interactue con mi BD de Mongo
 const Film = mongoose.model("Films", filmsSchema);
 

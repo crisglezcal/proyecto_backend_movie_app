@@ -1,10 +1,7 @@
-//- EXTENDER PLANTILLA BASE: Esta vista hereda de "dashboard.pug" y reemplaza su bloque "content"
 extends dashboard
 
-//- INICIAR BLOQUE DE CONTENIDO: Todo lo que va aquí reemplazará el "block content" de dashboard.pug
 block content
   
-  //- CONTENEDOR PRINCIPAL DE FAVORITOS
   .favorites-container
     
     //- VERIFICAR SI EL USUARIO ESTÁ LOGUEADO: "user" viene del middleware de autenticación
@@ -14,7 +11,7 @@ block content
       h1.favorites-title Mis películas favoritas ❤️
       
       //- MENSAJE DE BIENVENIDA PERSONALIZADO: Muestra el nombre del usuario usando interpolación #{}
-      p.welcome-message ¡Hola, #[strong #{user.username}]! Estas son tus películas favoritas
+      p.welcome-message ¡Hola! Estas son tus películas favoritas
       
       //- VERIFICAR SI HAY PELÍCULAS FAVORITAS: Comprueba que "favorites" existe y tiene al menos 1 elemento
       if favorites && favorites.length > 0
@@ -57,15 +54,15 @@ block content
               .film-info
                 
                 //- TÍTULO DE LA PELÍCULA: El "=" significa que muestra el valor directamente
-                h3.film-title= film.title
+                h3.film-title= film.Title
                 
                 //- AÑO DE LA PELÍCULA (si existe)
                 if film.year
-                  p.film-year 📅 Año: #{film.year} 
+                  p.film-year 📅 Año: #{film.Year} 
                 
                 //- DIRECTOR (si existe)
                 if film.director
-                  p.film-director 👨‍💼 Director: #{film.director}
+                  p.film-director 👨‍💼 Director: #{film.Director}
                 
                 //- GÉNERO (si existe)
                 if film.gender
@@ -106,7 +103,7 @@ block content
           h2 No tienes películas favoritas 💔 
           p ¡Empieza a agregar películas a tus favoritos desde la página de búsqueda!
           //- BOTÓN PARA IR A EXPLORAR PELÍCULAS
-          a.btn-primary(href="/films") Explorar películas 🔎
+          a.btn-primary(href="/search") Explorar películas 🔎
     
     //- USUARIO NO LOGUEADO - MOSTRAR MENSAJE DE ACCESO DENEGADO
     else
@@ -138,5 +135,5 @@ block content
         
         //- BOTONES DE ACCIÓN DEL MODAL
         .modal-actions
-          button#confirmCancel.btn-secondary Cancelar  
-          button#confirmDelete.btn-danger Eliminar
+          a.btn-link(href="/favorites") Cancelar  
+          a.btn-link(href="/api/favorites") Eliminar
