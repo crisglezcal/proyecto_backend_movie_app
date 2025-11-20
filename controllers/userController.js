@@ -1,6 +1,7 @@
 // controllers/userController.js
 
 const userService = require('../services/userServices');
+const userModel = require('../models/userModel');
 
 // GET /api/user
 const getUser = async (req, res) => {

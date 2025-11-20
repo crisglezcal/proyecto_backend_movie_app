@@ -6,7 +6,8 @@ html(lang="es")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     link(rel="stylesheet", href="/css/style.css")
     link(rel="icon" type="image/png" href="/images/favicon.png")
-    title Buscador de Películas
+    block head 
+      title Buscador de Películas
   body
     include ./header.pug
 
@@ -14,10 +15,10 @@ html(lang="es")
     main
       block content
         // Contenido por defecto para dashboard
-        h1 Bienvenido
+        h1 Bienvenido #{user.name}
         .dashboard-container
           a.btn-link(href="/search") Buscar películas
-          a.btn-link(href="/favorites") Mis películas
+          a.btn-link(href="/movies") Mis películas
 
     include ./footer.pug
     script(src="/js/script.js")

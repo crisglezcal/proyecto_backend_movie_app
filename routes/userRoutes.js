@@ -12,7 +12,7 @@ router.get('/profile', userController.renderProfile); // Vista del perfil
 router.get('/login', userController.renderProfile); 
 
 //[GET] http://localhost:3000/user
-router.get('/user', userController.renderUsersList); // Vista lista de usuarios (admin)
+router.get('/users', userController.renderUsersList); // Vista lista de usuarios (admin)
 
 //[GET] http://localhost:3000/api/user Obtener datos del perfil del usuario o administrador
 router.get('/api/user', userController.getUser); // Obtener datos de usuario
