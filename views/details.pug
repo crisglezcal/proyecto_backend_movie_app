@@ -1,0 +1,66 @@
+extends dashboard
+
+block content
+  // Contenedor de detalle
+  .movie-detail-container
+
+    // Botón Volver
+    a.back-button(href="/search") ← Volver al buscador
+
+    if movie
+      .detail-card
+        .left
+          if movie.poster
+            img.poster(src=movie.poster, alt=`Poster de ${movie.title}`)
+          else
+            img.poster(src="/images/no-image.jpg", alt="Sin imagen")
+
+          if user
+            form(method="POST", action=`/favorites/add/${movie.id}`)
+              button.add-fav(type="submit") ❤️ Añadir a Favoritos
+
+        .right
+          h2.title= movie.title
+
+          ul.data-list
+            li Año: #{movie.year || "No disponible"}
+            li Director: #{movie.director || "No disponible"}
+            li Género:
+              if movie.genres && movie.genres.length
+                each g in movie.genres
+                  span.genre= g
+              else
+                | No disponible
+            li Duración: #{movie.runtime || "No disponible"} min
+            li Rating:
+              if movie.rating
+                span.rating= movie.rating
+              else if movie.ratings && movie.ratings.length
+                span.rating= movie.ratings.map(r => `${r.Source}: ${r.Value}`).join(", ")
+              else
+                | Sin rating
+
+          h2 Sinopsis
+          p.synopsis= movie.plot || "No hay sinopsis disponible."
+
+          if movie.actors && movie.actors.length
+            h2 Actores
+            ul.cast
+              each actor in movie.actors
+                li= actor
+
+          if movie.opinions && movie.opinions.length
+            h2 Opiniones de espectadores
+            ul.opinions
+              each op in movie.opinions
+                li= op.message || op
+          else
+            h2 Opiniones
+            p No hay opiniones disponibles.
+
+    else
+      h1 Película no encontrada
+      p Intenta una nueva búsqueda.
+
+  // Script específico para detalle
+  script(src="/js/movie-detail.js")

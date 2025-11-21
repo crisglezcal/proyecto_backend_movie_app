@@ -1,0 +1,925 @@
+body, html {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #dedede;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+main {
+    flex: 1;
+}
+
+header {
+    background: #111;
+    padding: 10px 20px;
+}
+
+/* === NAVBAR === */
+nav {
+    display: flex; /* layout desktop */
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Lista de links */
+nav ul {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Items de la lista */
+nav li {
+    display: inline-block;
+}
+
+/* Links */
+nav a {
+    color: #ffff;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background 0.3s ease;
+}
+
+nav a:hover {
+    background: #333;
+}
+/* Logo dentro de la navbar */
+.logo img {
+    height: 40px; /* ajusta al tamaño que quieras */
+    width: auto;
+}
+
+
+/* Botón de logout */
+.logout-button {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: white;
+    cursor: pointer;
+    font: inherit;
+    text-decoration: none;
+}
+.logout-button:hover {
+     background: #333;
+}
+
+/* === BOTÓN HAMBURGUESA === */
+.menu-toggle {
+    display: none; /* oculto por defecto en desktop */
+    font-size: 28px;
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+}
+
+
+
+/* === CONTENEDOR GENERAL === */
+.auth-container {
+    max-width: 420px;
+    margin: 40px auto;
+    background: #1a1a1a;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.2);
+    color: #fff;
+    font-family: "Inter", sans-serif;
+}
+
+/* === TABS === */
+.auth-tabs {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.tab-button {
+    flex: 1;
+    padding: 10px 0;
+    background: #333;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    font-size: 15px;
+    transition: background 0.3s ease;
+    border-radius: 8px;
+    margin-right: 8px;
+}
+
+.tab-button:last-child {
+    margin-right: 0;
+}
+
+.tab-button.active {
+    background: #e50914; 
+}
+
+.tab-link {
+    color:white;
+    text-decoration: none;
+}
+
+.tab-link:hover{
+    background: #e50914; 
+}
+
+/* === CONTENIDO DE LOS FORMULARIOS === */
+.tab-content {
+    display: block;
+}
+
+h2 {
+    margin-bottom: 15px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+/* === INPUTS === */
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.form-group input {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    outline: none;
+    background: #222;
+    color: #fff;
+    transition: border 0.2s ease;
+}
+
+.form-group input:focus {
+    border-color: #e50914;
+}
+
+/* === BOTÓN PRINCIPAL === */
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    background: #e50914;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+    transition: background 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: #bb0810;
+}
+
+/* === SEPARADOR === */
+.auth-separator {
+    text-align: center;
+    margin: 25px 0;
+    position: relative;
+}
+
+.auth-separator span {
+    background: #1a1a1a;
+    padding: 0 10px;
+    z-index: 2;
+    position: relative;
+}
+
+.auth-separator::before {
+    content: "";
+    height: 1px;
+    width: 100%;
+    background: #444;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    z-index: 1;
+}
+
+/* === BOTÓN DE GOOGLE === */
+.social-auth {
+    display: flex;
+    justify-content: center;
+}
+
+.btn-google {
+   color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background 0.3s ease;
+}
+
+.btn-google:hover {
+    background: #afafaf;
+}
+
+.btn-google img {
+    vertical-align: middle;
+}
+
+/* Contenedor de tarjetas */
+.movie-container {
+    display: flex;           /* filas de tarjetas */
+    flex-wrap: wrap;         /* bajan a otra fila si no caben */
+    justify-content: center; /* centrado horizontal */
+    gap: 20px;               /* separación entre tarjetas */
+    padding: 20px;
+}
+
+/* Tarjeta individual */
+.movie-card {
+    background: #1a1a1a;;
+    border-radius: 15px;
+    padding: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    color: white;
+    max-width: 250px; /* ancho máximo */
+}
+
+/* Efecto hover */
+.movie-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* Imagen */
+.movie-card .img_logo {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+/* Botón detalle */
+.btn-detalle {
+    margin-top: auto;
+    display: inline-block;
+    padding: 10px 15px;
+    border-radius: 8px;
+    background: #e50914;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.25s ease;
+}
+
+.btn-detalle:hover {
+    background: #bb0810;
+}
+
+h1 {
+    padding: 15px;
+    text-align: center;
+}
+
+/* === DETALLE DE PELÍCULA === */
+.movie-detail-container {
+    display: flex;
+    flex-direction: column;  /* ✔ coloca el botón arriba */
+    align-items: center; 
+    justify-content: center;
+    padding: 20px;
+    color:white;
+}
+
+.detail-card {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    background: #1a1a1a;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    max-width: 900px;
+}
+
+.detail-card .left {
+    flex: 1 1 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.detail-card .left img.poster {
+    width: 100%;
+    max-width: 300px;
+    border-radius: 10px;
+    object-fit: cover;
+    margin-bottom: 15px;
+}
+
+.detail-card .left .add-fav {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background: #ff4c4c;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.detail-card .left .add-fav:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(255,76,76,0.4);
+}
+
+.detail-card .right {
+    flex: 2 1 500px;
+}
+
+.detail-card .right .data-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.detail-card .right .data-list li {
+    margin-bottom: 8px;
+}
+
+span.genre {
+    display: inline-block;
+    background: #333;
+    border-radius: 8px;
+    padding: 3px 8px;
+    margin: 2px;
+    font-size: 0.85rem;
+}
+
+span.rating {
+    background: #ff4c4c;
+    padding: 2px 8px;
+    border-radius: 6px;
+    color: white;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+ul.cast li,
+ul.opinions li {
+    margin-bottom: 5px;
+}
+
+ul.opinions li {
+    padding-left: 10px;
+    border-left: 2px solid #ff4c4c;
+}
+
+.back-button {
+    display: block;
+    margin-bottom: 20px;
+    padding: 20px;
+    color: #ff4c4c;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.25s ease;
+}
+
+/* === CONTENEDOR GENERAL === */
+.container {
+    padding: 30px;
+    color: white;
+}
+
+.container h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #ff4c4c;
+}
+
+h3{
+    color: #ff4c4c;
+    display: flex;
+    justify-content: center
+}
+
+/* === CONTENEDOR GENERAL === */
+.favorites-container {
+    padding: 30px;
+}
+
+.favorites-title {
+    text-align: center;
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+    color: #ff4c4c;
+}
+
+.welcome-message {
+    text-align: center;
+    font-size: 1.1rem;
+    margin-bottom: 25px;
+    color: #000000;
+}
+
+/* === ESTADÍSTICAS === */
+.favorites-stats {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 1.1rem;
+}
+
+.favorites-stats strong {
+    color: #ff4c4c;
+}
+
+/* === GRID DE PELÍCULAS === */
+.films-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 25px;
+}
+
+/* === TARJETA INDIVIDUAL === */
+.film-card {
+    background: #1a1a1a;
+    border-radius: 15px;
+    padding: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.film-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(255,76,76,0.35);
+}
+
+/* === PÓSTER === */
+.film-poster {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.film-poster img {
+    width: 100%;
+    max-width: 220px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+.no-poster {
+    width: 100%;
+    height: 320px;
+    background: #333;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #aaa;
+    font-size: 0.95rem;
+}
+
+/* === BOTÓN ELIMINAR === */
+.film-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.remove-favorite-btn {
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: #ff4c4c;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.remove-favorite-btn:hover {
+    transform: scale(1.05);
+}
+
+/* === INFORMACIÓN === */
+.film-info {
+    margin-top: 10px;
+}
+
+.film-title {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    color: #fff;
+    text-align: center;
+}
+
+.film-info p {
+    margin: 5px 0;
+    color: #ddd;
+    font-size: 0.95rem;
+}
+
+/* === SINOPSIS === */
+.film-plot {
+    margin-top: 10px;
+    background: #111;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.film-plot h4 {
+    margin-bottom: 5px;
+    color: #ff4c4c;
+}
+
+/* === REPARTO === */
+.film-actors {
+    margin-top: 10px;
+    padding: 10px;
+    background: #111;
+    border-left: 3px solid #ff4c4c;
+    border-radius: 10px;
+}
+
+/* === VALORACIONES === */
+.film-ratings {
+    margin-top: 15px;
+    padding: 10px;
+    background: #111;
+    border-radius: 10px;
+}
+
+.rating-item {
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+}
+
+.rating-item strong {
+    color: #ff4c4c;
+}
+
+/* === ESTADO VACÍO === */
+.empty-favorites {
+    text-align: center;
+    padding: 40px;
+    border-radius: 15px;
+    background: #1a1a1a;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.empty-favorites h2 {
+    color: #ff4c4c;
+    margin-bottom: 10px;
+}
+
+.btn-primary {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 18px;
+    background: #ff4c4c;
+    border-radius: 10px;
+    color: white;
+    text-decoration: none;
+    transition: transform 0.25s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+}
+
+/* === MODAL === */
+#confirmModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0.7);
+}
+
+.modal-content {
+    background: #1a1a1a;
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    width: 300px;
+}
+
+.modal-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.btn-link {
+    color: #ff4c4c;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* === FORMULARIO CREAR PELÍCULA === */
+.formulario {
+    background: #1a1a1a;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    margin-bottom: 40px;
+    max-width: 700px;
+    margin-inline: auto;
+}
+
+.formulario h2 {
+    margin-bottom: 20px;
+    text-align: center;
+    color: #ff4c4c;
+}
+
+#\#createMovieForm .campo {
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+}
+
+.campo label {
+    margin-bottom: 4px;
+    font-weight: bold;
+}
+
+.campo input,
+.campo textarea {
+    background: #111;
+    border: 1px solid #333;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.campo input:focus,
+.campo textarea:focus {
+    border-color: #ff4c4c;
+}
+
+textarea {
+    min-height: 70px;
+}
+
+.form-help {
+    font-size: 0.8rem;
+    color: #aaa;
+    margin-top: 5px;
+}
+
+/* Botón crear película */
+.crear-pelicula-btn {
+    width: 100%;
+    padding: 12px;
+    background: #ff4c4c;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    font-size: 1rem;
+}
+
+/* === LISTA DE PELÍCULAS === */
+.peliculas-lista {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    padding: 10px;
+}
+
+.pelicula-tarjeta {
+    background: #1a1a1a;
+    padding: 15px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.pelicula-tarjeta:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(255,76,76,0.35);
+}
+
+.pelicula-tarjeta img {
+    width: 100%;
+    height: 380px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+/* === INFO DE LA TARJETA === */
+.pelicula-info h3 {
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+    color: #fff;
+    text-align: center;
+}
+
+.pelicula-info p {
+    margin: 4px 0;
+    color: #ccc;
+    font-size: 0.9rem;
+}
+
+.detalles p {
+    color: #aaa;
+    font-size: 0.85rem;
+}
+
+/* === BOTONES EDITAR / ELIMINAR === */
+.botones-accion {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.edit-btn,
+.delete-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.25s ease;
+}
+
+.edit-btn {
+    background: #2b7cff;
+    color: white;
+    margin-right: 8px;
+}
+
+.delete-btn {
+    background: #ff4c4c;
+    color: white;
+}
+
+.edit-btn:hover,
+.delete-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* === ESTADO SIN RESULTADOS === */
+.peliculas-lista p {
+    grid-column: 1 / -1;
+    text-align: center;
+    font-size: 1.1rem;
+    color: #aaa;
+}
+
+
+/* Enlaces estilo botón */
+.dashboard-container {
+    display: flex;
+    justify-content: center;
+}
+.btn-link {
+    display: inline-block;
+    padding: 12px 25px;
+    margin: 5px;
+    background-color: #e50914;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 8px;
+    text-align: center;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn-link:hover {
+    background-color: #bb0810;
+    transform: translateY(-2px);
+}
+
+
+.search-container {
+    display: flex;              /* Activa flexbox */
+    justify-content: center;    /* Centra horizontalmente */
+    align-items: center;        /* Centra verticalmente */
+    gap: 10px;                  /* Espacio entre input y botón */
+    margin: 20px 0;             /* Separación superior e inferior */
+}
+
+.search-container input {
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: none;
+    width: 250px;
+}
+
+.search-container button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: none;
+    background-color: #e50914;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.search-container button:hover {
+    background-color: #bb0810;
+}
+
+footer {
+    text-align: center;
+    width: 100%;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    padding: 15px;
+}
+
+/* === RESPONSIVO === */
+@media (max-width: 768px) {
+
+    /* BACK BUTTON */
+    .back-button {
+        margin-bottom: 0;
+        margin-top: 10px;
+        display: block;
+    }
+
+    /* Tarjetas */
+    .movie-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .movie-card {
+        width: 90%;
+        max-width: none;
+    }
+
+    /* NAVBAR */
+    nav .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        right: 10px;
+        background-color: #111;
+        border-radius: 8px;
+        padding: 10px;
+        gap: 10px;
+    }
+
+    nav .nav-links.active {
+        display: flex;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    /* Detalle película */
+    .detail-card {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .detail-card .right {
+        width: 90%;
+        max-width: none;
+    }
+}
+
+
+

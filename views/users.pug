@@ -1,0 +1,14 @@
+extends dashboard
+
+block title 
+    title Usuarios
+block content
+    h1 Lista de usuarios
+    ul
+      each user in users
+        li
+          | #{user.name} (#{user.email})
+          a(href=`/users/edit/${user.id}`) Editar
+          form(action=`/api/user/${user.id}` method="POST")
+            input(type="hidden" name="_method" value="DELETE")
+            button(type="submit") Borrar

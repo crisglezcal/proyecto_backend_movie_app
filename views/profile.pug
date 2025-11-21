@@ -1,0 +1,21 @@
+extends dashboard
+
+block head
+    title Perfil
+
+block content
+    h1 Perfil de #{user ? user.name : 'Invitado'}
+
+    form(action="/api/user" method="POST")
+        label(for="name") Nombre:
+        input(type="text" name="name" value=(user ? user.name : ''))
+
+        label(for="email") Email:
+        input(type="email" name="email" value=(user ? user.email : ''))
+        <label for="role">Rol:</label>
+            <select id="role" name="role">
+                <option value="user" <%= user.role === 'user' ? 'selected' : '' %>>Usuario</option>
+                //- <option value="admin" <%= user.role === 'admin' ? 'selected' : '' %>>Administrador</option>
+            </select>
+
+        button(type="submit") Guardar cambios 

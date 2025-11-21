@@ -1,0 +1,43 @@
+//- HEADER COMPLETO CON NAVBAR RESPONSIVO
+header
+    nav
+        //- LOGO O NOMBRE DE LA APP
+        .logo
+            img(src="/images/logo.webp" alt="Move App Logo")
+
+        //- BOTÓN HAMBURGUESA PARA MÓVIL
+        button.menu-toggle(type="button" aria-label="Abrir menú") &#9776;
+
+        //- LISTA DE ENLACES DE NAVEGACIÓN
+        ul.nav-links
+            li
+                a(href="/dashboard") Películas 
+            
+            li
+                a(href="/favorites") Películas favoritas
+
+            if user
+                li
+                    a(href="/profile") Perfil
+                
+                if user.role === 'admin'
+                    li
+                        a(href="/manage") Gestionar películas
+                    li
+                        a(href="/users") Usuarios
+                
+                li
+                    form(action="/api/logout", method="POST")
+                        button(type="submit" class="logout-button") Cerrar sesión
+            else
+                li
+                    a(href="/signup") Sign up
+
+//- SCRIPT PARA EL MENÚ HAMBURGUESA, esto lo meto aqui por en el script al ponerlo encima el boton de buscar, no busca
+script.
+    const toggle = document.querySelector(".menu-toggle");
+    const navLinks = document.querySelector(".nav-links");
+
+    toggle.addEventListener("click", () => {
+        navLinks.classList.toggle("active");
+    });

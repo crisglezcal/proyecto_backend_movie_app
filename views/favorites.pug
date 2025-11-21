@@ -1,0 +1,56 @@
+extends dashboard
+
+block content
+  .favorites-container
+    if user
+      h1.favorites-title Mis películas favoritas ❤️
+      p.welcome-message ¡Hola! Estas son tus películas favoritas
+
+      if favorites && favorites.length > 0
+        .favorites-stats
+          p Tienes #[strong #{favorites.length}] película(s) en favoritos
+
+        .films-grid
+          each film in favorites
+            .film-card(data-film-id=film._id)
+              .film-poster
+                if film.Poster && film.Poster !== 'N/A'
+                  img(src=film.Poster, alt=film.Title, onerror="this.src='/images/placeholder.jpg'")
+                else
+                  .no-poster
+                    p No hay póster  
+
+                //- .film-actions
+                //-   button.remove-favorite-btn(type="button", title="Eliminar de favoritos") 🗑️
+
+              .film-info
+                h3.film-title= film.Title
+                if film.Year
+                  p.film-year 📅 Año: #{film.Year}
+                if film.Director
+                  p.film-director 👨‍💼 Director: #{film.Director}
+                if film.Genre
+                  p.film-genre 🏷️ Género: #{film.Genre}
+                if film.Duration
+                  p.film-duration ⏱️ Duración: #{film.Duration}
+                if film.Plot
+                  .film-plot
+                    h4 Sinopsis:
+                    p= film.Plot
+                if film.Actors
+                  .film-actors
+                    h4 Reparto:
+                    p= film.Actors
+
+              if film.Ratings && film.Ratings.length > 0
+                .film-ratings
+                  h4 Valoraciones:
+                  each rating in film.Ratings
+                    .rating-item
+                      strong #{rating.ref}:
+                      span #{rating.value} - #{rating.message}
+
+      else
+        .empty-favorites
+          h2 No tienes películas favoritas 💔
+          p ¡Empieza a agregar película
