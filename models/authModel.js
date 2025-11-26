@@ -43,21 +43,33 @@ const findUserByUsername = async (username) => {
 }
 
 //[GET] /api/recoverpassword - Buscar por email
+// const findUserByEmail = async (email) => {
+//     try {
+//         console.log('Buscando usuario por email:', email);
+        
+//         if (!email) {
+//             throw new Error('Email es obligatorio');
+//         }
+        
+//         const result = await pool.query(queries.findUserByEmail, [email]);
+//         return result.rows[0];
+//     } catch (error) {
+//         console.error('Error en findUserByEmail:', error.message);
+//         throw new Error('Error al buscar usuario por email');
+//     }
+// }
 const findUserByEmail = async (email) => {
+    if (!email) throw new Error('Email es obligatorio');
+
     try {
         console.log('Buscando usuario por email:', email);
-        
-        if (!email) {
-            throw new Error('Email es obligatorio');
-        }
-        
         const result = await pool.query(queries.findUserByEmail, [email]);
         return result.rows[0];
     } catch (error) {
         console.error('Error en findUserByEmail:', error.message);
         throw new Error('Error al buscar usuario por email');
     }
-}
+};
 
 //[GOOGLE OAUTH] - Crear usuario de Google
 const createGoogleUser = async (name, email, googleId, role = 'user') => {

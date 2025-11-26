@@ -81,16 +81,3 @@ Cada usuario dispone de un perfil donde puede:
 * Editar sus datos personales
 * Actualizar información relevante
 
----
-
-## 📁 Estructura del Proyecto
-
-*(Agregar si lo necesitas)*
-
-## ▶️ Cómo ejecutar el proyecto
-
-*(Agregar instrucciones si lo deseas)*
-
----
-
-Si quieres, puedo añadir imágenes, instrucciones de instalación, diagramas o mejorar el tono del README.

@@ -47,15 +47,37 @@ async function createUser(req, res) {
  * // POST /api/login
  * // Body: { username: "usuario", password: "123456" }
  */
+// async function logIn(req, res) {
+//     try {
+//         const { user, token } = await authService.logIn(req.body.username, req.body.password);
+//         res.cookie('token', token, { httpOnly: true });
+//         res.redirect('/dashboard');
+//     } catch (error) {
+//         res.status(error.status || 500).send(error.message);
+//     }
+// }
+// controller/loginController.js
 async function logIn(req, res) {
     try {
-        const { user, token } = await authService.logIn(req.body.username, req.body.password);
+        const { email, password } = req.body;
+
+        // Validar que el email y la contraseña existen
+        if (!email || !password) {
+            return res.status(400).send('Email y contraseña son obligatorios');
+        }
+
+        // Llamar al servicio de autenticación
+        const { user, token } = await authService.logIn(email, password);
+
+        // Guardar token en cookie y redirigir
         res.cookie('token', token, { httpOnly: true });
         res.redirect('/dashboard');
     } catch (error) {
+        // Enviar error con status si existe
         res.status(error.status || 500).send(error.message);
     }
 }
+
 
 /**
  * Cierra la sesión del usuario eliminando el token JWT
