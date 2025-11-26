@@ -20,50 +20,6 @@ async function createUser(username, email, password, role = 'user') {
 
 
 // //[POST] http://localhost:3000/api/login
-// async function logIn(email, password) {
-//     try {
-//         // Buscar usuario por username O email
-//         let user = await authModel.findUserByUsername(email);
-        
-//         // Si no encuentra por username, buscar por email
-//         if (!user) {
-//             user = await authModel.findUserByEmail(email);
-//         }
-
-//         if (!user) {
-//             const error = new Error('Credenciales inválidas');
-//             error.status = 401;
-//             throw error;
-//         }
-
-//         // Verificar si es usuario de Google (no tiene password)
-//         if (!user.password) {
-//             const error = new Error('Este usuario está registrado con Google. Usa Google Sign-In');
-//             error.status = 401;
-//             throw error;
-//         }
-
-//         const match = await bcrypt.compare(password, user.password);
-//         if (!match) {
-//             const error = new Error('Credenciales inválidas');
-//             error.status = 401;
-//             throw error;
-//         }
-
-//         const token = jwt.sign(
-//             { id: user.id, role: user.role },
-//             process.env.JWT_SECRET,
-//             { expiresIn: '1h' }
-//         );
-
-//         return { user, token };
-//     } catch (error) {
-//         console.error('Error en login:', error);
-//         throw error;
-//     }
-// }
-// services/authService.js
-
 async function logIn(email, password) {
     // Buscar usuario por email
     const user = await authModel.findUserByEmail(email);

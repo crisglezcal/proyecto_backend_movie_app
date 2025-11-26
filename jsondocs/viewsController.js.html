@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: viewsController.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: viewsController.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const Film = require('../models/films.model');
+
+/**
+ * Controlador para la página de búsqueda de películas
+ * @async
+ * @function homeController
+ * @param {Object} req - Objeto de petición de Express
+ * @param {Object} res - Objeto de respuesta de Express
+ * @returns {Promise&lt;void>} Renderiza la página de búsqueda con las películas
+ * @throws {Error} Si hay un error al consultar la base de datos
+ * @example
+ * // Uso en rutas:
+ * router.get('/search', homeController);
+ */
+const homeController = async (req, res) => {
+    try {
+        const movies = await Film.find();
+        
+        res.render('search', {
+            title: 'Movie App - Inicio',
+            message: 'Bienvenido a nuestra aplicación de películas',
+            movies: movies
+        });
+    } catch (error) {
+        console.error('Error en homeController:', error);
+        res.status(500).render('error', {
+            title: 'Error',
+            message: 'Error al cargar la página de inicio'
+        });
+    }
+};
+
+/**
+ * Controlador para el panel de control del usuario
+ * @async
+ * @function dashboardController
+ * @param {Object} req - Objeto de petición de Express
+ * @param {Object} res - Objeto de respuesta de Express
+ * @returns {Promise&lt;void>} Renderiza el dashboard con estadísticas
+ * @throws {Error} Si hay un error al contar los documentos en la base de datos
+ * @example
+ * // Uso en rutas:
+ * router.get('/dashboard', dashboardController);
+ */
+const dashboardController = async (req, res) => {
+    try {
+        const totalMovies = await Film.countDocuments();
+        
+        res.render('dashboard', {
+            title: 'Movie App - Dashboard',
+            user: {
+                name: 'Usuario',
+                email: 'usuario@ejemplo.com'
+            },
+            stats: {
+                totalMovies: totalMovies
+            }
+        });
+    } catch (error) {
+        console.error('Error en dashboardController:', error);
+        res.status(500).render('error', {
+            title: 'Error',
+            message: 'Error al cargar el dashboard'
+        });
+    }
+};
+
+/**
+ * Controlador para la página de detalle de películas
+ * @async
+ * @function detailController
+ * @param {Object} req - Objeto de petición de Express
+ * @param {Object} res - Objeto de respuesta de Express
+ * @returns {Promise&lt;void>} Renderiza la página de detalles de películas
+ * @throws {Error} Si hay un error al consultar la base de datos
+ * @example
+ * // Uso en rutas:
+ * router.get('/movies/:id', detailController);
+ */
+const detailController = async (req, res) => {
+    try {
+        const movies = await Film.find();
+        
+        res.render('search', {
+            title: 'Movie App - Inicio',
+            message: 'Bienvenido a nuestra aplicación de películas',
+            movies: movies
+        });
+    } catch (error) {
+        console.error('Error en homeController:', error);
+        res.status(500).render('error', {
+            title: 'Error',
+            message: 'Error al cargar la página de inicio'
+        });
+    }
+};
+
+module.exports = {
+    homeController,
+    dashboardController,
+    detailController
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createMovie">createMovie</a></li><li><a href="global.html#createUser">createUser</a></li><li><a href="global.html#dashboardController">dashboardController</a></li><li><a href="global.html#deleteMovie">deleteMovie</a></li><li><a href="global.html#detailController">detailController</a></li><li><a href="global.html#getMovieByTitle">getMovieByTitle</a></li><li><a href="global.html#googleAuthCallback">googleAuthCallback</a></li><li><a href="global.html#homeController">homeController</a></li><li><a href="global.html#logIn">logIn</a></li><li><a href="global.html#logOut">logOut</a></li><li><a href="global.html#recoverPassword">recoverPassword</a></li><li><a href="global.html#resetTokens">resetTokens</a></li><li><a href="global.html#restorePassword">restorePassword</a></li><li><a href="global.html#updateMovie">updateMovie</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Wed Nov 26 2025 16:48:00 GMT+0100 (hora estándar de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

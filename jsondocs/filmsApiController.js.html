@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: filmsApiController.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: filmsApiController.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const Film = require('../models/films.model');
+require('dotenv').config();
+const fetchFilm = require('../utils/fetchFilms');
+
+/**
+ * Busca una película por título en OMDB API y base de datos local
+ * @async
+ * @function getMovieByTitle
+ * @param {Object} req - Objeto de petición de Express
+ * @param {Object} req.params - Parámetros de la ruta
+ * @param {string} req.params.title - Título de la película a buscar
+ * @param {Object} res - Objeto de respuesta de Express
+ * @returns {Promise&lt;void>} Retorna la película encontrada o error
+ * @throws {Error} Si hay un error en la consulta a la API o base de datos
+ * @example
+ * // GET /api/movie/Inception
+ * // Retorna la película "Inception" si existe
+ */
+async function getMovieByTitle(req, res) {
+  const title = req.params.title;
+  try {
+    const film = await fetchFilm.fetchOneFilm(title);
+    if (film) {
+      return res.status(200).json(film);
+    }
+    const localFilm = await Film.findOne({
+      Title: new RegExp(`^${title}$`, 'i')
+    });
+    if (localFilm) {
+      return res.status(200).json(localFilm);
+    }
+    return res.status(404).json({ message: 'Film not found in OMDB or local database' });
+  } catch (error) {
+    console.error("Error retrieving movie:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message
+    });
+  }
+}
+
+/**
+ * Crea una nueva película en la base de datos (solo administradores)
+ * @async
+ * @function createMovie
+ * @param {Object} req - Objeto de petición de Express
+ * @param {Object} req.user - Usuario autenticado
+ * @param {string} req.user.role - Rol del usuario ('admin' requerido)
+ * @param {Object} req.body - Datos de la película a crear
+ * @param {string} req.body.Title - Título de la película
+ * @param {number} req.body.Year - Año de lanzamiento
+ * @param {string} req.body.Rated - Clasificación por edades
+ * @param {string} req.body.Released - Fecha de lanzamiento
+ * @param {string} req.body.Runtime - Duración
+ * @param {string} req.body.Genre - Género(s)
+ * @param {string} req.body.Director - Director(es)
+ * @param {string} req.body.Actors - Actores
+ * @param {string} req.body.Plot - Sinopsis
+ * @param {string} req.body.Poster - URL del póster
+ * @param {Array|string} req.body.Ratings - Calificaciones en formato array o JSON string
+ * @param {Array|string} req.body.Opinions - Opiniones en formato array o JSON string
+ * @param {Object} res - Objeto de respuesta de Express
+ * @returns {Promise&lt;void>} Retorna confirmación de creación o error
+ * @throws {Error} Si hay error de validación, duplicado o servidor
+ * @example
+ * // POST /api/movie
+ * // Body: { Title: "Nueva Película", Year: 2024, ... }
+ */
+async function createMovie(req, res) {
+  try {
+    // Verificar que el usuario es administrador
+    if (!req.user || req.user.role !== 'admin') {
+      return res.status(403).json({
+        message: 'Access denied. Administrator privileges required.'
+      });
+    }
+    const {
+      Title, Year, Rated, Released, Runtime, Genre,
+      Director, Actors, Plot, Poster, Ratings, Opinions
+    } = req.body;
+    // Generar un imdbID único
+    const imdbID = `tt${Date.now()}`;
+    // Procesar Ratings
+    let ratingsArray = [];
+    try {
+      ratingsArray = typeof Ratings === 'string' ? JSON.parse(Ratings) : Ratings;
+      ratingsArray = ratingsArray.map(rating => ({
+        type: rating.Source?.toLowerCase() || 'imdb',
+        Source: rating.Source || 'Internet Movie Database',
+        Value: rating.Value || 'N/A'
+      }));
+    } catch (error) {
+      return res.status(400).json({
+        message: 'Invalid JSON format in Ratings'
+      });
+    }
+    // Procesar Opinions
+    let opinionsArray = [];
+    try {
+      opinionsArray = typeof Opinions === 'string' ? JSON.parse(Opinions) : Opinions;
+      opinionsArray = opinionsArray.map(opinion => ({
+        message: typeof opinion === 'string' ? opinion : opinion.message
+      }));
+    } catch (error) {
+      return res.status(400).json({
+        message: 'Invalid JSON format in Opinions'
+      });
+    }
+    // Crear nueva película en MongoDB
+    const nuevaPelicula = new Film({
+      Title,
+      Year: parseInt(Year),
+      Rated,
+      Released,
+      Runtime,
+      Genre,
+      Director,
+      Actors,
+      Plot,
+      Poster,
+      imdbID,
+      Ratings: ratingsArray,
+      Opinions: opinionsArray
+    });
+    await nuevaPelicula.save();
+    res.status(200).json({
+      message: `Se ha guardado ${Title}`
+    });
+  } catch (error) {
+    console.error('Error creating movie:', error);
+    if (error.code === 11000) {
+      return res.status(400).json({
+        message: 'Movie with this title already exists'
+      });
+    }
+    res.status(500).json({
+      message: 'Internal server error',
+      error: error.message
+    });
+  }
+}
+
+/**
+ * Actualiza una película existente en la base de datos (solo administradores)
+ * @async
+ * @function updateMovie
+ * @param {Object} req - Objeto de petición de Express
+ * @param {Object} req.user - Usuario autenticado
+ * @param {string} req.user.role - Rol del usuario ('admin' requerido)
+ * @param {Object} req.body - Datos de la película a actualizar
+ * @param {string} req.body.id - ID de la película a actualizar
+ * @param {string} [req.body.Title] - Nuevo título de la película
+ * @param {number} [req.body.Year] - Nuevo año de lanzamiento
+ * @param {string} [req.body.Rated] - Nueva clasificación
+ * @param {string} [req.body.Released] - Nueva fecha de lanzamiento
+ * @param {string} [req.body.Runtime] - Nueva duración
+ * @param {string} [req.body.Genre] - Nuevo género
+ * @param {string} [req.body.Director] - Nuevo director
+ * @param {string} [req.body.Actors] - Nuevos actores
+ * @param {string} [req.body.Plot] - Nueva sinopsis
+ * @param {string} [req.body.Poster] - Nueva URL del póster
+ * @param {Array} [req.body.Ratings] - Nuevas calificaciones
+ * @param {Array} [req.body.Opinions] - Nuevas opiniones
+ * @param {Object} res - Objeto de respuesta de Express
+ * @returns {Promise&lt;void>} Retorna confirmación de actualización o error
+ * @throws {Error} Si hay error de validación, no encontrado o servidor
+ * @example
+ * // PUT /api/movie
+ * // Body: { id: "12345", Title: "Título Actualizado", Year: 2024 }
+ */
+async function updateMovie(req, res) {
+  try {
+    // Verificar que el usuario es administrador
+    if (!req.user || req.user.role !== 'admin') {
+      return res.status(403).json({
+        message: 'Access denied. Administrator privileges required.'
+      });
+    }
+    const {
+      id,
+      Title,
+      Year,
+      Rated,
+      Released,
+      Runtime,
+      Genre,
+      Director,
+      Actors,
+      Plot,
+      Poster,
+      Ratings,
+      Opinions
+    } = req.body;
+    if (!id) {
+      return res.status(400).json({
+        message: 'Movie ID is required'
+      });
+    }
+    // Verificar si ya existe una película con ese título (excluyendo la actual)
+    if (Title) {
+      const existingMovie = await Film.findOne({
+        Title: new RegExp(`^${Title}$`, 'i'),
+        _id: { $ne: id }
+      });
+      if (existingMovie) {
+        return res.status(400).json({
+          message: 'A movie with this title already exists'
+        });
+      }
+    }
+    // Crear objeto con todos los campos a actualizar
+    const updateData = {};
+    if (Title) updateData.Title = Title;
+    if (Year) updateData.Year = parseInt(Year);
+    if (Rated) updateData.Rated = Rated;
+    if (Released) updateData.Released = Released;
+    if (Runtime) updateData.Runtime = Runtime;
+    if (Genre) updateData.Genre = Genre;
+    if (Director) updateData.Director = Director;
+    if (Actors) updateData.Actors = Actors;
+    if (Plot) updateData.Plot = Plot;
+    if (Poster) updateData.Poster = Poster;
+    if (Ratings) updateData.Ratings = Ratings;
+    if (Opinions) updateData.Opinions = Opinions;
+    // Actualizar en MongoDB
+    const peliculaActualizada = await Film.findByIdAndUpdate(
+      id,
+      updateData,
+      { new: true }
+    );
+    if (!peliculaActualizada) {
+      return res.status(404).json({
+        message: 'Movie not found'
+      });
+    }
+    res.status(200).json({
+      message: `Película "${peliculaActualizada.Title}" actualizada exitosamente`
+    });
+  } catch (error) {
+    console.error('Error updating movie:', error);
+    res.status(500).json({
+      message: 'Internal server error',
+      error: error.message
+    });
+  }
+}
+
+/**
+ * Elimina una película de la base de datos por título (solo administradores)
+ * @async
+ * @function deleteMovie
+ * @param {Object} req - Objeto de petición de Express
+ * @param {Object} req.user - Usuario autenticado
+ * @param {string} req.user.role - Rol del usuario ('admin' requerido)
+ * @param {Object} req.params - Parámetros de la ruta
+ * @param {string} req.params.title - Título de la película a eliminar
+ * @param {Object} res - Objeto de respuesta de Express
+ * @returns {Promise&lt;void>} Retorna confirmación de eliminación o error
+ * @throws {Error} Si hay error de base de datos o servidor
+ * @example
+ * // DELETE /api/movie/Inception
+ * // Elimina la película "Inception" si existe
+ */
+async function deleteMovie(req, res) {
+  try {
+    // Verificar que el usuario es administrador
+    if (!req.user || req.user.role !== 'admin') {
+      return res.status(403).json({
+        message: 'Access denied. Administrator privileges required.'
+      });
+    }
+    const { title } = req.params;
+    // Eliminar de MongoDB
+    const resultado = await Film.findOneAndDelete({
+      Title: new RegExp(`^${title}$`, 'i')
+    });
+    if (!resultado) {
+      return res.status(404).json({
+        message: `No se encontró la película con título: ${title}`
+      });
+    }
+    res.status(200).json({
+      message: `Se ha borrado la película con título: ${title}`
+    });
+  } catch (error) {
+    console.error('Error deleting movie:', error);
+    res.status(500).json({
+      message: 'Internal server error',
+      error: error.message
+    });
+  }
+}
+
+module.exports = {
+  getMovieByTitle,
+  createMovie,
+  updateMovie,
+  deleteMovie,
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createMovie">createMovie</a></li><li><a href="global.html#createUser">createUser</a></li><li><a href="global.html#dashboardController">dashboardController</a></li><li><a href="global.html#deleteMovie">deleteMovie</a></li><li><a href="global.html#detailController">detailController</a></li><li><a href="global.html#getMovieByTitle">getMovieByTitle</a></li><li><a href="global.html#googleAuthCallback">googleAuthCallback</a></li><li><a href="global.html#homeController">homeController</a></li><li><a href="global.html#logIn">logIn</a></li><li><a href="global.html#logOut">logOut</a></li><li><a href="global.html#recoverPassword">recoverPassword</a></li><li><a href="global.html#resetTokens">resetTokens</a></li><li><a href="global.html#restorePassword">restorePassword</a></li><li><a href="global.html#updateMovie">updateMovie</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Wed Nov 26 2025 16:48:00 GMT+0100 (hora estándar de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
