@@ -15,7 +15,7 @@ const connectDB = require("./config/db_mongo");
 
 // ========================================================== INICIALIZACIÓN ==========================================================
 const app = express();
-const port = process.env.PORT; // SIN 3000 por defecto en producción
+const port = process.env.PORT || 3000; // SIN 3000 por defecto en producción
 app.listen(port, () => {
   console.log(`Servidor funcionando en puerto ${port}`);
 });
@@ -106,7 +106,7 @@ connectDB()
     app.listen(port, () => {
       console.log(
         cowsay.say({
-          text: `Movie App funcionando en http://localhost:3000/dashboard`,
+          text: `Movie App funcionando en http://localhost:3000/signup`,
           f: "owl",
         })
       );
