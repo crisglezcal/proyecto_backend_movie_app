@@ -117,7 +117,7 @@ router.get('/login', (req, res) => {
 
 // Ruta raíz
 router.get('/', (req, res) => {
-  // O redirige a /search
+  // O redirige 
   res.redirect('/signup');
 
   // O si quieres renderizar directamente:

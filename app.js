@@ -106,7 +106,7 @@ connectDB()
     app.listen(port, () => {
       console.log(
         cowsay.say({
-          text: `Movie App funcionando en http://localhost:${port}/dashboard`,
+          text: `Movie App funcionando en http://localhost:3000/dashboard`,
           f: "owl",
         })
       );
