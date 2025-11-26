@@ -115,4 +115,14 @@ router.get('/login', (req, res) => {
   res.render('signup', { user: req.user, tab: 'login' });
 });
 
+// Ruta raíz
+router.get('/', (req, res) => {
+  // O redirige 
+  res.redirect('/signup');
+
+  // O si quieres renderizar directamente:
+  // res.render('home', { user: req.user });
+});
+
+
 module.exports = router;
