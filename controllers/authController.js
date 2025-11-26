@@ -47,16 +47,6 @@ async function createUser(req, res) {
  * // POST /api/login
  * // Body: { username: "usuario", password: "123456" }
  */
-// async function logIn(req, res) {
-//     try {
-//         const { user, token } = await authService.logIn(req.body.username, req.body.password);
-//         res.cookie('token', token, { httpOnly: true });
-//         res.redirect('/dashboard');
-//     } catch (error) {
-//         res.status(error.status || 500).send(error.message);
-//     }
-// }
-// controller/loginController.js
 async function logIn(req, res) {
     try {
         const { email, password } = req.body;
@@ -78,9 +68,8 @@ async function logIn(req, res) {
     }
 }
 
-
 /**
- * Cierra la sesión del usuario eliminando el token JWT
+ * Cierra la sesión del usuario eliminando el token JWT Y la sesión de Passport
  * @async
  * @function logOut
  * @param {Object} req - Objeto de petición de Express
@@ -90,9 +79,61 @@ async function logIn(req, res) {
  * // POST /api/logout
  */
 async function logOut(req, res) {
-    authService.logOut();
-    res.clearCookie('token');
-    res.redirect('/login');
+    try {
+        console.log('🔐 Iniciando logout - Usuario:', req.user?.email);
+        
+        // 1. Limpiar cookie JWT (para login tradicional)
+        res.clearCookie('token');
+        console.log('✅ Cookie JWT limpiada');
+
+        // 2. Cerrar sesión de Passport (para Google OAuth)
+        if (req.logout) {
+            req.logout(function(err) {
+                if (err) {
+                    console.log('⚠️  Error en req.logout:', err);
+                } else {
+                    console.log('✅ Sesión de Passport cerrada');
+                }
+                
+                // 3. Destruir la sesión completamente
+                if (req.session) {
+                    req.session.destroy(function(err) {
+                        if (err) {
+                            console.log('⚠️  Error destruyendo sesión:', err);
+                        } else {
+                            console.log('✅ Sesión destruida');
+                        }
+                        
+                        // 4. Limpiar cookie de sesión de Express
+                        res.clearCookie('connect.sid');
+                        console.log('✅ Cookie de sesión limpiada');
+                        
+                        console.log('🎉 Logout COMPLETO - Redirigiendo a login');
+                        res.redirect('/login');
+                    });
+                } else {
+                    console.log('🎉 Logout COMPLETO (sin sesión) - Redirigiendo a login');
+                    res.redirect('/login');
+                }
+            });
+        } else {
+            // Fallback si req.logout no existe
+            console.log('⚠️  req.logout no disponible, usando método alternativo');
+            if (req.session) {
+                req.session.destroy(() => {
+                    res.clearCookie('connect.sid');
+                    res.redirect('/login');
+                });
+            } else {
+                res.redirect('/login');
+            }
+        }
+        
+    } catch (error) {
+        console.error('💥 Error en logout controller:', error);
+        // En caso de error, igual redirigir a login
+        res.redirect('/login');
+    }
 }
 
 /**

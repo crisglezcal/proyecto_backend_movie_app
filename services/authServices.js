@@ -42,7 +42,14 @@ async function logIn(email, password) {
 
 //[POST] http://localhost:3000/api/logout
 function logOut() {
-    return true; 
+    try {
+        console.log('✅ Logout service ejecutado');
+        // La lógica compleja ahora está en el controller
+        return true;
+    } catch (error) {
+        console.error('Error en logout service:', error);
+        throw error;
+    }
 }
 
 //[GET] http://localhost:3000/api/recoverpassword
