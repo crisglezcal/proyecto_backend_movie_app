@@ -1,8 +1,8 @@
 const queries = {
     // =================================================== AUTENTICACIÓN TRADICIONAL ===================================================
     insertUser: `
-        INSERT INTO users (name, surname, email, password, role)
-        VALUES ($1, $2, $3, $4, $5) RETURNING *;`,
+        INSERT INTO users (name, email, password, role)
+        VALUES ($1, $2, $3, $4) RETURNING *;`,
 
     findUserByUsername: `
         SELECT * FROM users WHERE name = $1;`,

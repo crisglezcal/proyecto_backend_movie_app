@@ -11,33 +11,56 @@ async function createUser(username, email, password, role = 'user') {
         error.status = 400;
         throw error;
     }
-    return await authModel.createUser(username, email, password, role);
+    
+    // ¡HASHEAR la contraseña antes de enviar al modelo!
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
+    return await authModel.createUser(username, email, hashedPassword, role);
 }
 
 
 //[POST] http://localhost:3000/api/login
 async function logIn(username, password) {
-    const user = await authModel.findUserByUsername(username);
-    if (!user) {
-        const error = new Error('Credenciales inválidas');
-        error.status = 401;
+    try {
+        // Buscar usuario por username O email
+        let user = await authModel.findUserByUsername(username);
+        
+        // Si no encuentra por username, buscar por email
+        if (!user) {
+            user = await authModel.findUserByEmail(username);
+        }
+
+        if (!user) {
+            const error = new Error('Credenciales inválidas');
+            error.status = 401;
+            throw error;
+        }
+
+        // Verificar si es usuario de Google (no tiene password)
+        if (!user.password) {
+            const error = new Error('Este usuario está registrado con Google. Usa Google Sign-In');
+            error.status = 401;
+            throw error;
+        }
+
+        const match = await bcrypt.compare(password, user.password);
+        if (!match) {
+            const error = new Error('Credenciales inválidas');
+            error.status = 401;
+            throw error;
+        }
+
+        const token = jwt.sign(
+            { id: user.id, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+
+        return { user, token };
+    } catch (error) {
+        console.error('Error en login:', error);
         throw error;
     }
-
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) {
-        const error = new Error('Credenciales inválidas');
-        error.status = 401;
-        throw error;
-    }
-
-    const token = jwt.sign(
-        { id: user.id, role: user.role },
-        process.env.JWT_SECRET,
-        { expiresIn: '1h' }
-    );
-
-    return { user, token };
 }
 
 //[POST] http://localhost:3000/api/logout

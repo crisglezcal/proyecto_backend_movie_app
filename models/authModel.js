@@ -3,22 +3,19 @@ const bcrypt = require('bcryptjs');
 const queries = require("../queries/users.queries");
 
 //[POST] /api/signup - Registro tradicional
-const createUser = async (name, email, role = 'user', password) => {
+const createUser = async (username, email, password, role = 'user') => {
     try {
-        console.log('Crear usuario:', { name, email, role });
+        console.log('Crear usuario:', { username, email, role });
         
-        if (!name || !email || !password) {
-            throw new Error('Nombre, email y contraseña son obligatorios');
+        if (!username || !email || !password) {
+            throw new Error('Username, email y contraseña son obligatorios');
         }
         
-        const hashedPassword = await bcrypt.hash(password, 10);
-        
         const result = await pool.query(queries.insertUser, [
-            name, 
-            '', // ????
-            email, 
-            hashedPassword,
-            role
+            username,     // $1 - name
+            email,        // $2 - email
+            password,     // $3 - password (ya hasheado)
+            role          // $4 - role
         ]);
         
         return result.rows[0];
@@ -86,57 +83,27 @@ const createGoogleUser = async (name, email, googleId, role = 'user') => {
     }
 }
 
+//[PUT] Actualizar contraseña por email
+const updatePasswordByEmail = async (email, hashedPassword) => {
+    try {
+        console.log('Actualizando contraseña para:', email);
+        
+        const result = await pool.query(
+            'UPDATE users SET password = $1 WHERE email = $2 RETURNING *',
+            [hashedPassword, email]
+        );
+        
+        return result.rows[0];
+    } catch (error) {
+        console.error('Error en updatePasswordByEmail:', error.message);
+        throw new Error('Error al actualizar contraseña');
+    }
+}
+
 module.exports = {
     createUser,
     findUserByUsername,  
     findUserByEmail,
-    createGoogleUser
+    createGoogleUser,
+    updatePasswordByEmail
 };
-
-// // const pool = require("../config/db_sql");
-
-// const queries = require("../queries/users.queries");
-
-// const createUser = async (name, surname, email, password, role = 'user') => {
-//     const result = await pool.query(queries.insertUser, [name, surname, email, password, role]);
-//     return result;
-// }
-
-// const logInModel = async (name, email, password) => {
-//     try {
-//         const valuesLogin = [name, email, password];
-//         return await pool.query(queries.loginUser, valuesLogin);
-
-//     } catch (error) {
-//         console.error('Error al logar usuario', error.message);
-//         throw new Error('Error al buscar el usuario por email')
-//     }
-// }
-
-// const logOutModel = async (email, password) => {
-//     try {
-//         const valuesLogout = [email, password];
-//         return await pool.query(queries.logoutUser, valuesLogout);
-//     } catch (error) {
-//         console.error('Error al deslogar usuario', error.message);
-//         throw new Error('Error al cerrar sesión')
-//     }
-// }
-
-// const getUserModel = async (email, password) => {
-//     try {
-//         const value = [email, password];
-//         return await pool.query(queries.getUser, value)
-
-//     } catch (error) {
-//         console.error('Error al leer contraseña', erromessage);
-//         throw new Error('Error al recuperar contraseña')
-//     }
-// }
-
-// module.exports = {
-//     createUser,
-//     logInModel,
-//     logOutModel,
-//     getUserModel
-// }
